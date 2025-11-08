@@ -1,0 +1,7 @@
+{
+  "scripts": {
+    "dev:client": "npm --prefix client run dev",
+    "dev:server": "bun --cwd server --hot index.ts",
+    "dev": "npm run dev:server & npm run dev:client"
+  }
+}

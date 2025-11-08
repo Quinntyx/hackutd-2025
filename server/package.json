@@ -1,0 +1,16 @@
+{
+  "dependencies": {
+    "@elysiajs/static": "^1.4.6",
+    "@google/genai": "^1.29.0",
+    "elysia": "^1.4.15",
+    "mime": "^4.1.0"
+  },
+  "scripts": {
+    "dev": "bun --hot index.ts",
+    "start": "bun index.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.0",
+    "bun-types": "^1.3.2"
+  }
+}
