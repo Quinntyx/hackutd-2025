@@ -28,13 +28,13 @@ export default function CarCard({ car }: Props) {
   } = car
 
   return (
-    <div className="w-full bg-white shadow-sm rounded-lg overflow-hidden flex flex-row gap-4 p-4 items-stretch">
+    <div className="w-full bg-white shadow-sm rounded-lg overflow-hidden flex flex-row gap-4 p-3 items-stretch">
       {/* image (left) */}
-      <div className="w-44 flex-shrink-0">
+      <div className="w-56 sm:w-64 flex-shrink-0">
         <img
           src={placeholder}
           alt={model}
-          className="w-full h-28 sm:h-36 object-cover rounded-md"
+          className="w-full h-24 sm:h-28 object-cover rounded-md"
         />
       </div>
 
@@ -50,11 +50,12 @@ export default function CarCard({ car }: Props) {
             <div className="text-2xl font-extrabold text-emerald-600">
               {fmtCurrency(monthlyPayment)}/mo
             </div>
-            <div className="text-sm text-gray-500">Est. daily {fmtCurrency(estimatedDailyCost)}</div>
+            <div className="text-sm text-gray-500">(12-month term)</div>
+            <div className="text-sm text-gray-500">Est. daily gas: {fmtCurrency(estimatedDailyCost)}</div>
           </div>
         </div>
 
-        <div className="mt-3 grid grid-cols-2 gap-2 text-sm text-gray-700">
+        <div className="mt-2 grid grid-cols-2 gap-2 text-sm text-gray-700">
           <div>
             <div className="text-xs text-gray-400">Sticker Price</div>
             <div>{fmtCurrency(stickerPrice)}</div>
@@ -85,8 +86,8 @@ export default function CarCard({ car }: Props) {
           </div>
         </div>
 
-        <div className="mt-auto pt-3 flex items-center justify-between">
-          <div className="text-sm text-gray-500">Fuel: {fuelType}</div>
+        <div className="mt-auto pt-2 flex items-center justify-between">
+          <div />
           <div className="flex gap-2">
             <button className="px-3 py-1 rounded-md bg-blue-600 text-white text-sm hover:bg-blue-700">View</button>
             <button className="px-3 py-1 rounded-md border border-gray-200 text-sm">Contact</button>

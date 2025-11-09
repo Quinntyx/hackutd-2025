@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from "react"
 import CarCard from "../components/toyota/CarCard"
+import BannerCarCard from "../components/toyota/BannerCarCard"
+import CondensedCarCard from "../components/toyota/CondensedCarCard"
 import type { Car, SearchResult, FuelType, Transmission } from "../../../model/data"
+
+function fmtCurrency(n: number) {
+  return n.toLocaleString(undefined, { style: "currency", currency: "USD", maximumFractionDigits: 0 })
+}
 
 type Filters = {
   priceTarget?: number
@@ -20,7 +26,8 @@ type Filters = {
 }
 
 export default function CarExplorer() {
-  const [cars, setCars] = useState<Car[]>([])
+  const [cars, setCars] = useState<Car[]>([]) // used when API returns array
+  const [searchResult, setSearchResult] = useState<SearchResult | null>(null) // used when API returns object
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -50,6 +57,8 @@ export default function CarExplorer() {
   async function fetchCars(f: Filters) {
     setLoading(true)
     setError(null)
+    setSearchResult(null)
+    setCars([])
 
     const params = new URLSearchParams()
 
@@ -79,23 +88,24 @@ export default function CarExplorer() {
       if (!res.ok) throw new Error(`HTTP ${res.status}`)
       const data = await res.json()
 
-      let list: Car[] = []
       if (Array.isArray(data)) {
-        list = data
+        // fallback: array of cars — render full cards
+        setCars(data as Car[])
+        setSearchResult(null)
       } else if (data && typeof data === "object") {
-        const sr = data as Partial<SearchResult>
-        const candidates: (Car | undefined)[] = [
-          sr.bestFit,
-          sr.budgetPick,
-          sr.luxuryPick,
-          ...(sr.otherOptions ?? []),
-        ]
-        list = candidates.filter(Boolean) as Car[]
+        const sr = data as SearchResult
+        // guard: ensure arrays exist
+        const otherOptions = Array.isArray(sr.otherOptions) ? sr.otherOptions : []
+        setSearchResult({
+          bestFit: sr.bestFit,
+          budgetPick: sr.budgetPick,
+          luxuryPick: sr.luxuryPick,
+          otherOptions
+        })
+        setCars([])
       } else {
         throw new Error("Unexpected response shape")
       }
-
-      setCars(list)
     } catch (err) {
       setError(String(err))
     } finally {
@@ -158,26 +168,17 @@ export default function CarExplorer() {
           <div>
             <label className="text-sm font-medium">Price Target ($)</label>
             <input
-              type="number"
-              className="mt-1 w-full rounded border px-2 py-1"
-              value={filters.priceTarget ?? ""}
-              onChange={(e) => setFilters((s) => ({ ...s, priceTarget: e.target.value === "" ? undefined : Number(e.target.value) }))}
-              placeholder="max sticker price"
-              min={0}
+              type="range"
+              className="mt-1 w-full"
+              min={2000}
+              max={40000}
+              step={1000}
+              value={filters.priceTarget ?? 20000}
+              onChange={(e) => setFilters((s) => ({ ...s, priceTarget: Number(e.target.value) }))}
             />
-            <div className="mt-1 flex items-center gap-2 text-sm">
-              <span>Priority</span>
-              <select
-                value={filters.pricePriority}
-                onChange={(e) => setFilters((s) => ({ ...s, pricePriority: Number(e.target.value) }))}
-                className="ml-auto rounded border px-2 py-1"
-              >
-                <option value={1}>1 (low)</option>
-                <option value={2}>2</option>
-                <option value={3}>3</option>
-                <option value={4}>4</option>
-                <option value={5}>5 (high)</option>
-              </select>
+            <div className="mt-1 flex justify-between text-sm text-gray-500">
+              <span>{fmtCurrency(filters.priceTarget ?? 20000)}</span>
+              <span>$2k - $40k</span>
             </div>
           </div>
 
@@ -190,20 +191,6 @@ export default function CarExplorer() {
               onChange={(e) => setFilters((s) => ({ ...s, mpgTarget: e.target.value === "" ? undefined : Number(e.target.value) }))}
               min={0}
             />
-            <div className="mt-1 flex items-center gap-2 text-sm">
-              <span>Priority</span>
-              <select
-                value={filters.mpgPriority}
-                onChange={(e) => setFilters((s) => ({ ...s, mpgPriority: Number(e.target.value) }))}
-                className="ml-auto rounded border px-2 py-1"
-              >
-                <option value={1}>1</option>
-                <option value={2}>2</option>
-                <option value={3}>3</option>
-                <option value={4}>4</option>
-                <option value={5}>5</option>
-              </select>
-            </div>
           </div>
 
           <div>
@@ -218,20 +205,6 @@ export default function CarExplorer() {
               <option value="Automatic">Automatic</option>
               <option value="Semi-Auto">Semi-Auto</option>
             </select>
-            <div className="mt-1 text-sm flex items-center gap-2">
-              <span>Priority</span>
-              <select
-                value={filters.transmissionPriority}
-                onChange={(e) => setFilters((s) => ({ ...s, transmissionPriority: Number(e.target.value) }))}
-                className="ml-auto rounded border px-2 py-1"
-              >
-                <option value={1}>1</option>
-                <option value={2}>2</option>
-                <option value={3}>3</option>
-                <option value={4}>4</option>
-                <option value={5}>5</option>
-              </select>
-            </div>
           </div>
 
           <div>
@@ -244,17 +217,6 @@ export default function CarExplorer() {
                 onChange={(e) => setFilters((s) => ({ ...s, electric: e.target.checked }))}
               />
               <label htmlFor="electric" className="text-sm">Only electric</label>
-              <select
-                value={filters.electricPriority}
-                onChange={(e) => setFilters((s) => ({ ...s, electricPriority: Number(e.target.value) }))}
-                className="ml-auto rounded border px-2 py-1 text-sm"
-              >
-                <option value={1}>1</option>
-                <option value={2}>2</option>
-                <option value={3}>3</option>
-                <option value={4}>4</option>
-                <option value={5}>5</option>
-              </select>
             </div>
           </div>
 
@@ -267,20 +229,6 @@ export default function CarExplorer() {
               onChange={(e) => setFilters((s) => ({ ...s, mileageTarget: e.target.value === "" ? undefined : Number(e.target.value) }))}
               min={0}
             />
-            <div className="mt-1 text-sm flex items-center gap-2">
-              <span>Priority</span>
-              <select
-                value={filters.mileagePriority}
-                onChange={(e) => setFilters((s) => ({ ...s, mileagePriority: Number(e.target.value) }))}
-                className="ml-auto rounded border px-2 py-1"
-              >
-                <option value={1}>1</option>
-                <option value={2}>2</option>
-                <option value={3}>3</option>
-                <option value={4}>4</option>
-                <option value={5}>5</option>
-              </select>
-            </div>
           </div>
 
           <div>
@@ -296,20 +244,6 @@ export default function CarExplorer() {
               <option value="Hybrid">Hybrid</option>
               <option value="Other">Other</option>
             </select>
-            <div className="mt-1 text-sm flex items-center gap-2">
-              <span>Priority</span>
-              <select
-                value={filters.fuelTypePriority}
-                onChange={(e) => setFilters((s) => ({ ...s, fuelTypePriority: Number(e.target.value) }))}
-                className="ml-auto rounded border px-2 py-1"
-              >
-                <option value={1}>1</option>
-                <option value={2}>2</option>
-                <option value={3}>3</option>
-                <option value={4}>4</option>
-                <option value={5}>5</option>
-              </select>
-            </div>
           </div>
 
           <div className="flex gap-2 pt-2">
@@ -379,14 +313,51 @@ export default function CarExplorer() {
           </div>
         ) : (
           <>
-            {cars.length === 0 ? (
-              <div className="text-gray-500">No vehicles found.</div>
-            ) : (
-              cars.map((c, idx) => (
-                <div key={`${c.model}-${c.year}-${idx}`} className="w-full">
-                  <CarCard car={c} />
+            {/* If we have a SearchResult object, render its parts specially */}
+            {searchResult ? (
+              <div className="space-y-4">
+                {searchResult.bestFit && <BannerCarCard car={searchResult.bestFit} />}
+
+                <div className="grid gap-4">
+                  {searchResult.budgetPick && (
+                    <div>
+                      <h3 className="text-sm text-gray-500 mb-2">Budget pick</h3>
+                      <CarCard car={searchResult.budgetPick} />
+                    </div>
+                  )}
+                  {searchResult.luxuryPick && (
+                    <div>
+                      <h3 className="text-sm text-gray-500 mb-2">Luxury pick</h3>
+                      <CarCard car={searchResult.luxuryPick} />
+                    </div>
+                  )}
                 </div>
-              ))
+
+                {/* Condensed list for other options */}
+                {searchResult.otherOptions && searchResult.otherOptions.length > 0 && (
+                  <>
+                    <h3 className="text-lg font-medium text-gray-900 mt-8 mb-4">Other Matches</h3>
+                    <div className="space-y-3">
+                      {searchResult.otherOptions.map((c, idx) => (
+                        <CondensedCarCard key={`${c.model}-${c.year}-${idx}`} car={c} />
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
+            ) : (
+              // fallback: array of cars -> render full cards
+              <>
+                {cars.length === 0 ? (
+                  <div className="text-gray-500">No vehicles found.</div>
+                ) : (
+                  cars.map((c, idx) => (
+                    <div key={`${c.model}-${c.year}-${idx}`} className="w-full">
+                      <CarCard car={c} />
+                    </div>
+                  ))
+                )}
+              </>
             )}
           </>
         )}
