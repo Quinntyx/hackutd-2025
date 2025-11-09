@@ -276,11 +276,6 @@ const ToyotaApp: React.FC = () => {
             Leasing, financing, warranties and cost of ownership — explained clearly so you choose from
             informed understanding, not guesswork.
           </p>
-          <div className="mt-6 flex justify-center">
-            <Button variant="outline" className="px-6 py-3 rounded-lg border-[#111111] hover:bg-white" onClick={() => setView("inventory")}>
-              Explore Offers & Models
-            </Button>
-          </div>
         </div>
       </section>
 
