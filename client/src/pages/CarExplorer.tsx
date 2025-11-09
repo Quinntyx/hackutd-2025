@@ -4,26 +4,10 @@ import BannerCarCard from "../components/toyota/BannerCarCard"
 import CondensedCarCard from "../components/toyota/CondensedCarCard"
 import SearchResults from "../components/toyota/SearchResults"
 import type { Car, SearchResult, FuelType, Transmission } from "../../../model/data"
+import type { CompoundFilter } from "../../../model/filter"
 
 function fmtCurrency(n: number) {
   return n.toLocaleString(undefined, { style: "currency", currency: "USD", maximumFractionDigits: 0 })
-}
-
-type Filters = {
-  priceTarget?: number
-  pricePriority: number
-  mpgTarget?: number
-  mpgPriority: number
-  transmission?: Transmission | ""
-  transmissionPriority: number
-  electric: boolean
-  electricPriority: number
-  mileageTarget?: number
-  mileagePriority: number
-  fuelType?: FuelType | ""
-  fuelTypePriority: number
-  city: string
-  commuteDistance: number
 }
 
 export default function CarExplorer() {
@@ -32,15 +16,15 @@ export default function CarExplorer() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  const [filters, setFilters] = useState<Filters>({
+  const [filters, setFilters] = useState<CompoundFilter>({
     pricePriority: 1,
     mpgPriority: 1,
-    transmission: "",
+    transmission: undefined,
     transmissionPriority: 1,
     electric: false,
     electricPriority: 1,
     mileagePriority: 1,
-    fuelType: "",
+    fuelType: undefined,
     fuelTypePriority: 1,
     priceTarget: undefined,
     mpgTarget: undefined,
@@ -55,7 +39,7 @@ export default function CarExplorer() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  async function fetchCars(f: Filters) {
+  async function fetchCars(f: CompoundFilter) {
     setLoading(true)
     setError(null)
     setSearchResult(null)
@@ -120,15 +104,15 @@ export default function CarExplorer() {
   }
 
   function handleReset() {
-    const reset: Filters = {
+    const reset: CompoundFilter = {
       pricePriority: 1,
       mpgPriority: 1,
-      transmission: "",
+      transmission: undefined,
       transmissionPriority: 1,
       electric: false,
       electricPriority: 1,
       mileagePriority: 1,
-      fuelType: "",
+      fuelType: undefined,
       fuelTypePriority: 1,
       priceTarget: undefined,
       mpgTarget: undefined,
@@ -199,7 +183,7 @@ export default function CarExplorer() {
             <select
               className="mt-1 w-full rounded border px-2 py-1"
               value={filters.transmission}
-              onChange={(e) => setFilters((s) => ({ ...s, transmission: e.target.value as Transmission | "" }))}
+              onChange={(e) => setFilters((s) => ({ ...s, transmission: e.target.value === "" ? undefined : (e.target.value as Transmission) }))}
             >
               <option value="">Any</option>
               <option value="Manual">Manual</option>
@@ -237,7 +221,7 @@ export default function CarExplorer() {
             <select
               className="mt-1 w-full rounded border px-2 py-1"
               value={filters.fuelType}
-              onChange={(e) => setFilters((s) => ({ ...s, fuelType: e.target.value as FuelType | "" }))}
+              onChange={(e) => setFilters((s) => ({ ...s, fuelType: e.target.value === "" ? undefined : (e.target.value as FuelType) }))}
             >
               <option value="">Any</option>
               <option value="Gasoline">Gasoline</option>

@@ -1,7 +1,7 @@
 // src/components/toyota/ToyotaApp.tsx
 import React, { useState } from "react";
-import LifestyleSelector from "./LifestyleSelector";
-import VehicleInventory from "./VehicleInventory";
+import LifestyleSelector from "@/components/toyota/LifestyleSelector";
+import VehicleInventory from "@/components/toyota/VehicleInventory";
 import toyotalogo from "@/assets/toyota/toyotalogo.png";
 import { Button } from "@/components/ui/button";
 

@@ -1,4 +1,4 @@
-import ToyotaApp from './components/toyota/ToyotaApp';
+import ToyotaApp from '@/pages/ToyotaApp';
 
 function App() {
   return (
