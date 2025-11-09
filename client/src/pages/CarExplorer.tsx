@@ -20,6 +20,7 @@ export default function CarExplorer({ initialFilters }: CarExplorerProps = {}) {
   const [refinementQuery, setRefinementQuery] = useState("")
   const [refining, setRefining] = useState(false)
 
+  const [purchaseType, setPurchaseType] = useState<'buy' | 'lease'>('buy')
   const [filters, setFilters] = useState<CompoundFilter>(initialFilters ?? {
     pricePriority: 5,
     mpgPriority: 5,
@@ -158,6 +159,30 @@ export default function CarExplorer({ initialFilters }: CarExplorerProps = {}) {
     }
   }
 
+  // Adjust car prices based on purchase type
+  const adjustCarForPurchaseType = (car: Car): Car => {
+    if (purchaseType === 'buy') return car;
+    
+    return {
+      ...car,
+      downPayment: car.downPayment * 0.5,
+      monthlyPayment: car.monthlyPayment * 0.5,
+      // Keep other properties the same
+    };
+  };
+
+  // Adjust search results for purchase type
+  const adjustSearchResult = (result: SearchResult | null): SearchResult | null => {
+    if (!result) return null;
+    
+    return {
+      bestFit: adjustCarForPurchaseType(result.bestFit),
+      budgetPick: adjustCarForPurchaseType(result.budgetPick),
+      luxuryPick: adjustCarForPurchaseType(result.luxuryPick),
+      otherOptions: result.otherOptions?.map(adjustCarForPurchaseType) || []
+    };
+  };
+
   return (
     <div className="w-full min-h-screen">
       {/* NAV */}
@@ -178,6 +203,39 @@ export default function CarExplorer({ initialFilters }: CarExplorerProps = {}) {
       <div className="w-full flex">
       {/* Sidebar */}
       <aside className="w-72 border-r border-gray-200 p-4 sticky top-[73px] h-[calc(100vh-73px)] overflow-y-auto">
+        {/* Lease/Buy Toggle */}
+        <div className="mb-6">
+          <div className="flex rounded-md shadow-sm" role="group">
+            <button
+              type="button"
+              className={`flex-1 py-2 px-4 text-sm font-medium rounded-l-lg border ${
+                purchaseType === 'buy' 
+                  ? 'bg-[#EB0A1E] text-white border-[#EB0A1E]' 
+                  : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+              }`}
+              onClick={() => setPurchaseType('buy')}
+            >
+              Buy
+            </button>
+            <button
+              type="button"
+              className={`flex-1 py-2 px-4 text-sm font-medium rounded-r-lg border ${
+                purchaseType === 'lease' 
+                  ? 'bg-[#EB0A1E] text-white border-[#EB0A1E]' 
+                  : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+              }`}
+              onClick={() => setPurchaseType('lease')}
+            >
+              Lease
+            </button>
+          </div>
+          {/* Potential disclaimer here
+          {purchaseType === 'lease' && (
+            <p className="mt-2 text-xs text-gray-500">
+              Lease prices are estimated at 50% of purchase price for demonstration.
+            </p>
+          )} */}
+        </div>
         <form onSubmit={handleApply} className="space-y-4">
           <div>
             <label className="text-sm font-medium">City</label>
@@ -292,7 +350,7 @@ export default function CarExplorer({ initialFilters }: CarExplorerProps = {}) {
       <main className="flex-1 overflow-y-auto p-4 space-y-4">
         {error && <div className="p-3 rounded bg-red-50 text-red-700 border border-red-100">Error: {error}</div>}
 
-        {loading ? (
+          {loading ? (
           <div className="space-y-4">
         {Array.from({ length: 5 }).map((_, i) => (
           <div key={i} className="w-full bg-white shadow-sm rounded-lg overflow-hidden flex flex-row gap-4 p-4 items-stretch animate-pulse">
@@ -346,12 +404,13 @@ export default function CarExplorer({ initialFilters }: CarExplorerProps = {}) {
           </div>
         ) : (
           <SearchResults 
-            searchResult={searchResult} 
-            cars={cars}
+            searchResult={searchResult ? adjustSearchResult(searchResult) : null} 
+            cars={purchaseType === 'lease' ? cars.map(adjustCarForPurchaseType) : cars}
             refinementQuery={refinementQuery}
             setRefinementQuery={setRefinementQuery}
             onRefine={handleRefine}
             refining={refining}
+            purchaseType={purchaseType}
           />
         )}
       </main>

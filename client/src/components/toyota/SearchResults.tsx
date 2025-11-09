@@ -4,16 +4,17 @@ import BannerCarCard from "./BannerCarCard"
 import CarCard from "./CarCard"
 import CondensedCarCard from "./CondensedCarCard"
 
-type Props = {
+interface Props {
   searchResult: SearchResult | null
   cars: Car[]
-  refinementQuery?: string
-  setRefinementQuery?: (query: string) => void
-  onRefine?: (e?: React.FormEvent) => void
-  refining?: boolean
+  refinementQuery: string
+  setRefinementQuery: (query: string) => void
+  onRefine: (e?: React.FormEvent) => Promise<void>
+  refining: boolean
+  purchaseType: 'buy' | 'lease'
 }
 
-function SearchResults({ searchResult, cars, refinementQuery, setRefinementQuery, onRefine, refining }: Props) {
+function SearchResults({ searchResult, cars, refinementQuery, setRefinementQuery, onRefine, refining, purchaseType }: Props) {
   if (searchResult) {
     return (
       <div className="space-y-4">
