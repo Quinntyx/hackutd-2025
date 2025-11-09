@@ -7,13 +7,118 @@ import { Button } from "@/components/ui/button";
 
 import { ShieldCheck, Gauge, Layers, SlidersHorizontal } from "lucide-react";
 import CarExplorer from "@/pages/CarExplorer";
+import type { CompoundFilter } from "../../../model/filter";
+import type { Lifestyle } from "@/components/toyota/LifestyleSelector";
 
 type View = "home" | "lifestyle" | "inventory" | "explorer";
 
 const ToyotaApp: React.FC = () => {
   const [view, setView] = useState<View>("home");
+  const [initialFilters, setInitialFilters] = useState<CompoundFilter | undefined>(undefined);
 
-  const handleLifestyleComplete = () => {
+  const handleLifestyleComplete = (selectedLifestyles: Lifestyle[]) => {
+    // Accumulate values from all lifestyles
+    const accumulator = {
+      priceTargets: [] as number[],
+      mpgTargets: [] as number[],
+      mileageTargets: [] as number[],
+      commuteDistances: [] as number[],
+      mpgPriorities: [] as number[],
+      pricePriorities: [] as number[],
+      electricPriorities: [] as number[],
+      fuelTypePriorities: [] as number[],
+      transmissions: [] as string[],
+      fuelTypes: [] as string[],
+      electricCount: 0,
+    };
+
+    // Collect values from each lifestyle
+    selectedLifestyles.forEach((lifestyle) => {
+      switch (lifestyle.name) {
+        case "Daily Commuter":
+          accumulator.mpgTargets.push(30);
+          accumulator.mpgPriorities.push(2);
+          accumulator.priceTargets.push(25000);
+          accumulator.fuelTypes.push("Hybrid");
+          accumulator.commuteDistances.push(20);
+          break;
+
+        case "Adventure Seeker":
+          accumulator.priceTargets.push(35000);
+          accumulator.mileageTargets.push(50000);
+          accumulator.transmissions.push("Automatic");
+          break;
+
+        case "Family Focused":
+          accumulator.priceTargets.push(32000);
+          accumulator.mileageTargets.push(40000);
+          accumulator.fuelTypes.push("Hybrid");
+          accumulator.mpgTargets.push(28);
+          break;
+
+        case "Urban Professional":
+          accumulator.priceTargets.push(28000);
+          accumulator.mpgTargets.push(35);
+          accumulator.mpgPriorities.push(2);
+          accumulator.fuelTypes.push("Hybrid");
+          accumulator.commuteDistances.push(15);
+          break;
+
+        case "Commercial Vehicle Use":
+          accumulator.priceTargets.push(30000);
+          accumulator.mileageTargets.push(60000);
+          accumulator.transmissions.push("Automatic");
+          break;
+
+        case "Environment-Forward Driver":
+          accumulator.electricCount++;
+          accumulator.electricPriorities.push(3);
+          accumulator.fuelTypes.push("Hybrid");
+          accumulator.fuelTypePriorities.push(3);
+          accumulator.mpgTargets.push(40);
+          accumulator.mpgPriorities.push(3);
+          break;
+
+        case "First-Time Buyer":
+          accumulator.priceTargets.push(20000);
+          accumulator.pricePriorities.push(3);
+          accumulator.mileageTargets.push(30000);
+          break;
+      }
+    });
+
+    // Average numeric values
+    const avg = (arr: number[]) => arr.length > 0 ? Math.round(arr.reduce((a, b) => a + b, 0) / arr.length) : undefined;
+    
+    // Most common value for categorical fields
+    const mostCommon = (arr: string[]) => {
+      if (arr.length === 0) return undefined;
+      const counts = arr.reduce((acc, val) => {
+        acc[val] = (acc[val] || 0) + 1;
+        return acc;
+      }, {} as Record<string, number>);
+      return Object.entries(counts).sort((a, b) => b[1] - a[1])[0][0];
+    };
+
+    // Build final filters
+    const filters: CompoundFilter = {
+      priceTarget: avg(accumulator.priceTargets),
+      pricePriority: avg(accumulator.pricePriorities) ?? 1,
+      mpgTarget: avg(accumulator.mpgTargets),
+      mpgPriority: avg(accumulator.mpgPriorities) ?? 1,
+      mileageTarget: avg(accumulator.mileageTargets),
+      mileagePriority: 1,
+      commuteDistance: avg(accumulator.commuteDistances) ?? 0,
+      transmission: mostCommon(accumulator.transmissions) as any,
+      transmissionPriority: 1,
+      fuelType: mostCommon(accumulator.fuelTypes) as any,
+      fuelTypePriority: avg(accumulator.fuelTypePriorities) ?? 1,
+      electric: accumulator.electricCount > 0,
+      electricPriority: avg(accumulator.electricPriorities) ?? 1,
+      city: "",
+    };
+
+    setInitialFilters(filters);
     setView("explorer");
   };
 
@@ -26,7 +131,7 @@ const ToyotaApp: React.FC = () => {
   }
 
   if (view === "explorer") {
-    return <CarExplorer />
+    return <CarExplorer initialFilters={initialFilters} />
   }
 
   return (

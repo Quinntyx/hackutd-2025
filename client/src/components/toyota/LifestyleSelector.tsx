@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { Mountain, Users, Building2, Wrench, Leaf, Key, Car } from "lucide-react";
 
-interface Lifestyle {
+export interface Lifestyle {
   id: number;
   name: string;
   description: string;

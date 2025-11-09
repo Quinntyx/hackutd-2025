@@ -10,13 +10,17 @@ function fmtCurrency(n: number) {
   return n.toLocaleString(undefined, { style: "currency", currency: "USD", maximumFractionDigits: 0 })
 }
 
-export default function CarExplorer() {
+interface CarExplorerProps {
+  initialFilters?: CompoundFilter;
+}
+
+export default function CarExplorer({ initialFilters }: CarExplorerProps = {}) {
   const [cars, setCars] = useState<Car[]>([]) // used when API returns array
   const [searchResult, setSearchResult] = useState<SearchResult | null>(null) // used when API returns object
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  const [filters, setFilters] = useState<CompoundFilter>({
+  const [filters, setFilters] = useState<CompoundFilter>(initialFilters ?? {
     pricePriority: 1,
     mpgPriority: 1,
     transmission: undefined,
