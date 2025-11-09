@@ -1,7 +1,7 @@
 import { Elysia } from 'elysia'
 import { staticPlugin } from '@elysiajs/static'
 import * as path from 'node:path'
-import { generateContent } from '@feature/genai'
+import { generateContent, generatePriorityAdjustments } from '@feature/genai'
 import { getPricesForCity } from '@feature/price_lookup'
 import { getAvailableVehicles } from '@feature/car_lookup'
 import { CompoundFilter } from '@model/filter'
@@ -35,6 +35,38 @@ const app = new Elysia()
     } as CompoundFilter;
 
     return getAvailableVehicles(filter)
+  })
+  .post('/api/refine', async ({ body }) => {
+    const { refinementQuery, currentFilters } = body as { refinementQuery: string, currentFilters: CompoundFilter };
+    
+    // Extract current priorities
+    const currentPriorities = {
+      pricePriority: currentFilters.pricePriority,
+      mpgPriority: currentFilters.mpgPriority,
+      transmissionPriority: currentFilters.transmissionPriority,
+      electricPriority: currentFilters.electricPriority,
+      mileagePriority: currentFilters.mileagePriority,
+      fuelTypePriority: currentFilters.fuelTypePriority,
+    };
+    
+    // Get adjusted priorities from Gemini (only priorities, not values)
+    const adjustedPriorities = await generatePriorityAdjustments(refinementQuery, currentPriorities);
+    
+    // Clamp priorities to 1-10 range
+    const clampPriority = (p: number) => Math.max(1, Math.min(10, Math.round(p)));
+    
+    // Return updated filters with new priorities but same values
+    const updatedFilters: CompoundFilter = {
+      ...currentFilters,
+      pricePriority: clampPriority(adjustedPriorities.pricePriority),
+      mpgPriority: clampPriority(adjustedPriorities.mpgPriority),
+      transmissionPriority: clampPriority(adjustedPriorities.transmissionPriority),
+      electricPriority: clampPriority(adjustedPriorities.electricPriority),
+      mileagePriority: clampPriority(adjustedPriorities.mileagePriority),
+      fuelTypePriority: clampPriority(adjustedPriorities.fuelTypePriority),
+    };
+    
+    return updatedFilters;
   })
 
   // --- static files from Vite build ---

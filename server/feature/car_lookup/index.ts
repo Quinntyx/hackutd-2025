@@ -37,27 +37,55 @@ function calculateCarScore(car: Car, filters: CompoundFilter, priceWeight: numbe
     const monthlyPriceTarget = (filters.priceTarget ?? 0) / 12;
     const totalMonthlyPrice = car.monthlyPayment + (car.estimatedDailyCost * 30);
 
+    // Price scoring (lower is better)
     if (filters.priceTarget) {
-        // Lower price is better
+        // If we have a target, use the one-sided difference
         const priceDiff = calculateOneSidedDifference(totalMonthlyPrice, monthlyPriceTarget, true);
         totalScore += normalizeScore(priceDiff) * filters.pricePriority * priceWeight;
+    } else {
+        // If no target, use normalized inverse of price (cheaper is better)
+        const normalizedPrice = 1 - (totalMonthlyPrice / 1000); // Rough normalization
+        totalScore += Math.max(0, normalizedPrice) * filters.pricePriority * priceWeight;
     }
 
+    // MPG scoring (higher is better)
     if (filters.mpgTarget) {
-        // Higher MPG is better
         const mpgDiff = calculateOneSidedDifference(car.mpg, filters.mpgTarget, false);
         totalScore += normalizeScore(mpgDiff) * filters.mpgPriority;
+    } else {
+        // If no target, use normalized MPG (higher is better)
+        const normalizedMpg = car.mpg / 50; // Rough normalization assuming 50mpg is great
+        totalScore += Math.min(1, normalizedMpg) * filters.mpgPriority;
     }
 
+    // Mileage scoring (lower is better)
     if (filters.mileageTarget) {
-        // Lower mileage is better
         const mileageDiff = calculateOneSidedDifference(car.mileage, filters.mileageTarget, true);
         totalScore += normalizeScore(mileageDiff) * filters.mileagePriority;
+    } else {
+        // If no target, use normalized inverse of mileage (lower is better)
+        const normalizedMileage = 1 - (car.mileage / 200000); // Rough normalization
+        totalScore += Math.max(0, normalizedMileage) * filters.mileagePriority;
     }
 
+    // Electric/hybrid bonus (if electric filter is on and car is hybrid)
     if (filters.electric && car.fuelType === 'Hybrid') {
         const hybridScore = filters.commuteDistance <= 30 ? 1 : 0.5;
         totalScore += hybridScore * filters.electricPriority;
+    }
+
+    // Transmission match bonus
+    if (filters.transmission && car.transmission === filters.transmission) {
+        // Add a bonus proportional to how important transmission is
+        const transmissionMatchScore = 0.5 * (filters.transmissionPriority / 10);
+        totalScore += transmissionMatchScore;
+    }
+
+    // Fuel type match bonus
+    if (filters.fuelType && car.fuelType === filters.fuelType) {
+        // Add a bonus proportional to how important fuel type is
+        const fuelTypeMatchScore = 0.5 * (filters.fuelTypePriority / 10);
+        totalScore += fuelTypeMatchScore;
     }
 
     return totalScore;

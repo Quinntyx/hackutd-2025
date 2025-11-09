@@ -20,17 +20,19 @@ export default function CarExplorer({ initialFilters }: CarExplorerProps = {}) {
   const [searchResult, setSearchResult] = useState<SearchResult | null>(null) // used when API returns object
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [refinementQuery, setRefinementQuery] = useState("")
+  const [refining, setRefining] = useState(false)
 
   const [filters, setFilters] = useState<CompoundFilter>(initialFilters ?? {
-    pricePriority: 1,
-    mpgPriority: 1,
+    pricePriority: 5,
+    mpgPriority: 5,
     transmission: undefined,
-    transmissionPriority: 1,
+    transmissionPriority: 5,
     electric: false,
-    electricPriority: 1,
-    mileagePriority: 1,
+    electricPriority: 5,
+    mileagePriority: 5,
     fuelType: undefined,
-    fuelTypePriority: 1,
+    fuelTypePriority: 5,
     priceTarget: undefined,
     mpgTarget: undefined,
     mileageTarget: undefined,
@@ -110,15 +112,15 @@ export default function CarExplorer({ initialFilters }: CarExplorerProps = {}) {
 
   function handleReset() {
     const reset: CompoundFilter = {
-      pricePriority: 1,
-      mpgPriority: 1,
+      pricePriority: 5,
+      mpgPriority: 5,
       transmission: undefined,
-      transmissionPriority: 1,
+      transmissionPriority: 5,
       electric: false,
-      electricPriority: 1,
-      mileagePriority: 1,
+      electricPriority: 5,
+      mileagePriority: 5,
       fuelType: undefined,
-      fuelTypePriority: 1,
+      fuelTypePriority: 5,
       priceTarget: undefined,
       mpgTarget: undefined,
       mileageTarget: undefined,
@@ -127,6 +129,36 @@ export default function CarExplorer({ initialFilters }: CarExplorerProps = {}) {
     }
     setFilters(reset)
     fetchCars(reset)
+  }
+
+  async function handleRefine(e?: React.FormEvent) {
+    e?.preventDefault()
+    if (!refinementQuery.trim()) return
+    
+    setRefining(true)
+    setError(null)
+    
+    try {
+      const res = await fetch('/api/refine', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          refinementQuery: refinementQuery.trim(),
+          currentFilters: filters
+        })
+      })
+      
+      if (!res.ok) throw new Error(`HTTP ${res.status}`)
+      
+      const updatedFilters = await res.json() as CompoundFilter
+      setFilters(updatedFilters)
+      setRefinementQuery("") // Clear the input
+      fetchCars(updatedFilters)
+    } catch (err) {
+      setError(`Refinement failed: ${String(err)}`)
+    } finally {
+      setRefining(false)
+    }
   }
 
   return (
@@ -316,7 +348,14 @@ export default function CarExplorer({ initialFilters }: CarExplorerProps = {}) {
         ))}
           </div>
         ) : (
-          <SearchResults searchResult={searchResult} cars={cars} />
+          <SearchResults 
+            searchResult={searchResult} 
+            cars={cars}
+            refinementQuery={refinementQuery}
+            setRefinementQuery={setRefinementQuery}
+            onRefine={handleRefine}
+            refining={refining}
+          />
         )}
       </main>
       </div>

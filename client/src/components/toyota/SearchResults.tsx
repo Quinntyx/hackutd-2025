@@ -7,12 +7,39 @@ import CondensedCarCard from "./CondensedCarCard"
 type Props = {
   searchResult: SearchResult | null
   cars: Car[]
+  refinementQuery?: string
+  setRefinementQuery?: (query: string) => void
+  onRefine?: (e?: React.FormEvent) => void
+  refining?: boolean
 }
 
-export default React.memo(function SearchResults({ searchResult, cars }: Props) {
+function SearchResults({ searchResult, cars, refinementQuery, setRefinementQuery, onRefine, refining }: Props) {
   if (searchResult) {
     return (
       <div className="space-y-4">
+        {/* Refinement Bar */}
+        {searchResult.bestFit && setRefinementQuery && onRefine && (
+          <div className="max-w-4xl mx-auto">
+            <form onSubmit={onRefine} className="flex gap-2 mb-4">
+              <input
+                type="text"
+                value={refinementQuery ?? ""}
+                onChange={(e) => setRefinementQuery(e.target.value)}
+                placeholder="Not satisfied? Enter a refinement query here"
+                disabled={refining}
+                className="flex-1 px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
+              />
+              <button
+                type="submit"
+                disabled={refining || !refinementQuery?.trim()}
+                className="px-6 py-3 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+              >
+                {refining ? "Refining..." : "Refine"}
+              </button>
+            </form>
+          </div>
+        )}
+        
         {searchResult.bestFit && (
           <div className="max-w-4xl mx-auto">
             <BannerCarCard car={searchResult.bestFit} />
@@ -67,13 +94,6 @@ export default React.memo(function SearchResults({ searchResult, cars }: Props) 
       ))}
     </>
   )
-}, (prevProps, nextProps) => {
-  // Custom comparison to prevent unnecessary re-renders
-  if (prevProps.cars.length !== nextProps.cars.length) return false
-  if (!!prevProps.searchResult !== !!nextProps.searchResult) return false
-  if (prevProps.searchResult && nextProps.searchResult) {
-    if (prevProps.searchResult.bestFit?.model !== nextProps.searchResult.bestFit?.model) return false
-    if (prevProps.searchResult.otherOptions.length !== nextProps.searchResult.otherOptions.length) return false
-  }
-  return true
-})
+}
+
+export default SearchResults
