@@ -216,7 +216,7 @@ const LifestyleSelector: React.FC<LifestyleSelectorProps> = ({ onComplete, onNee
       {/* Beige wrapper */}
       <div className="bg-gray-200 rounded-3xl px-8 py-12 shadow-sm border border-gray-200">
         <div className="text-center mb-12">
-          <h1 className="text-5xl font-extrabold tracking-tight text-[#111827]">
+          <h1 className="text-5xl font-extrabold tracking-tight text-[#111827] py-5">
             Find Your Perfect Toyota
           </h1>
           <p className="text-lg text-[#4B5563] mb-4">
@@ -387,7 +387,9 @@ const LifestyleSelector: React.FC<LifestyleSelectorProps> = ({ onComplete, onNee
                       {selected.length} lifestyle{selected.length > 1 ? "s" : ""} selected
                     </p>
                     <p className="text-sm text-[#4B5563]">Ready to find your perfect Toyota.</p>
+
                   </div>
+
 
                   <div>
                     <h4 className="font-bold text-sm text-[#111827] mb-2 uppercase tracking-wide">Selected Lifestyles</h4>
