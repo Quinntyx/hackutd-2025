@@ -1,11 +1,9 @@
-import ToyotaApp from '@/pages/ToyotaApp';
+import AssessmentPageTwo from './pages/assessment2'
 
-function App() {
+export default function App() {
   return (
     <div>
-      <ToyotaApp />
+      <AssessmentPageTwo />
     </div>
   );
 }
-
-export default App; 

@@ -1,4 +1,3 @@
-// src/components/TextBox.tsx
 import { cn } from "@/lib/utils"; // utility to merge class names
 
 type TextBoxProps = {
@@ -14,12 +13,16 @@ type SmallTextBoxProps = {
     title: string;
     subtitle?: string;
     subtext?: string;
-    height?: string;       // e.g., "h-50"
-    className?: string;    // container
-    className2?: string;   // h2
-    className3?: string;   // h4
-    className4?: string;   // h5
+    height?: string;
+    width?: string;
+    selected?: boolean;             // <- new: determines if highlighted
+    onClick?: () => void;           // <- new: click handler from parent
+    className?: string;
+    className2?: string;
+    className3?: string;
+    className4?: string;
   };
+  
 
 export function TextBox({ title, subtitle, height = "h-50", className, className2, className3 }: TextBoxProps) {
   return (
@@ -27,8 +30,8 @@ export function TextBox({ title, subtitle, height = "h-50", className, className
       className={cn(
         "border-2 rounded-2xl flex flex-col justify-center items-center",
         height,
-        "bg-white", // default background
-        className  // container overrides
+        "bg-white",
+        className
       )}
     >
       <h1 className={cn("text-center text-3xl font-bold", className2)}>
@@ -43,17 +46,32 @@ export function TextBox({ title, subtitle, height = "h-50", className, className
   );
 }
 
-export function SmallTextBox({ title, subtitle, subtext, height = "h-50", className, className2, className3, className4 }: SmallTextBoxProps) {
+export function SmallTextBox({
+    title,
+    subtitle,
+    subtext,
+    height = "h-50",
+    width = "w-120",
+    selected = false,
+    onClick,
+    className,
+    className2,
+    className3,
+    className4,
+  }: SmallTextBoxProps) {
     return (
       <div
+        onClick={onClick}
         className={cn(
-          "border-2 rounded-2xl flex flex-col justify-center items-center",
+          "border-2 rounded-2xl flex flex-col justify-center items-center cursor-pointer transition-all duration-200",
           height,
-          "bg-white", // default background
-          className  // container overrides
+          width,
+          "bg-white hover:shadow-lg",
+          selected ? "text-red-500 border-red-500" : "text-black border-gray-300",
+          className
         )}
       >
-        <h2 className={cn("text-center text-3xl font-bold", className2)}>
+        <h2 className={cn("text-center text-2xl font-bold", className2)}>
           {title}
         </h2>
         {subtitle && (
@@ -62,8 +80,8 @@ export function SmallTextBox({ title, subtitle, subtext, height = "h-50", classN
           </h4>
         )}
         {subtext && (
-          <h5 className={cn("text-center text-gray-500 mt-2", className4)}>
-            {subtitle}
+          <h5 className={cn("text-center text-gray-500 mt-2 text-xs", className4)}>
+            {subtext}
           </h5>
         )}
       </div>
