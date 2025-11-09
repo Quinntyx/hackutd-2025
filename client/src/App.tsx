@@ -1,9 +1,12 @@
-import CarExplorer from './pages/CarExplorer'
+import ToyotaApp from './components/toyota/ToyotaApp';
 
 function App() {
   return (
     <div>
-      <CarExplorer />
+      <h1>Team App</h1>
+      <ToyotaApp />
     </div>
-  )
+  );
 }
+
+export default App; 
