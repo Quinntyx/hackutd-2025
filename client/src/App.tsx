@@ -4,7 +4,7 @@ import ToyotaApp from './pages/ToyotaApp';
 export default function App() {
   return (
     <div>
-      <AssessmentPageTwo />
+      <ToyotaApp />
     </div>
   );
 }

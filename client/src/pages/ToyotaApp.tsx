@@ -190,7 +190,7 @@ const ToyotaApp: React.FC = () => {
       <Navigation />
 
       {/* Hero with Toyota aesthetic */}
-      <section className="relative bg-gradient-to-b from-[#f8f9fa] to-white">
+      <section className="relative bg-linear-to-b from-[#f8f9fa] to-white">
         <div className="max-w-7xl mx-auto px-6 pt-20 pb-24">
           <div className="text-center">
             <h1 className="text-5xl lg:text-6xl font-light text-[#1a1a1a] mb-8 leading-tight">
@@ -232,7 +232,7 @@ const ToyotaApp: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="group cursor-pointer" onClick={() => setView("inventory")}>
               <div className="bg-[#f8f9fa] rounded-lg h-56 mb-6 flex items-center justify-center overflow-hidden transition-transform group-hover:scale-105">
-                <div className="w-48 h-28 bg-gradient-to-r from-[#e6e6e6] to-[#d4d4d4] rounded-lg flex items-center justify-center">
+                <div className="w-48 h-28 bg-linear-to-r from-[#e6e6e6] to-[#d4d4d4] rounded-lg flex items-center justify-center">
                   <span className="text-[#999999] font-medium">RAV4 Hybrid</span>
                 </div>
               </div>
@@ -243,7 +243,7 @@ const ToyotaApp: React.FC = () => {
 
             <div className="group cursor-pointer" onClick={() => setView("inventory")}>
               <div className="bg-[#f8f9fa] rounded-lg h-56 mb-6 flex items-center justify-center overflow-hidden transition-transform group-hover:scale-105">
-                <div className="w-48 h-28 bg-gradient-to-r from-[#e6e6e6] to-[#d4d4d4] rounded-lg flex items-center justify-center">
+                <div className="w-48 h-28 bg-linear-to-r from-[#e6e6e6] to-[#d4d4d4] rounded-lg flex items-center justify-center">
                   <span className="text-[#999999] font-medium">Camry</span>
                 </div>
               </div>
@@ -254,7 +254,7 @@ const ToyotaApp: React.FC = () => {
 
             <div className="group cursor-pointer" onClick={() => setView("inventory")}>
               <div className="bg-[#f8f9fa] rounded-lg h-56 mb-6 flex items-center justify-center overflow-hidden transition-transform group-hover:scale-105">
-                <div className="w-48 h-28 bg-gradient-to-r from-[#e6e6e6] to-[#d4d4d4] rounded-lg flex items-center justify-center">
+                <div className="w-48 h-28 bg-linear-to-r from-[#e6e6e6] to-[#d4d4d4] rounded-lg flex items-center justify-center">
                   <span className="text-[#999999] font-medium">Prius</span>
                 </div>
               </div>
