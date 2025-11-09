@@ -266,47 +266,20 @@ const ToyotaApp: React.FC = () => {
         </div>
       </section>
 
-      {/* Toyota Values */}
-      <section className="py-20 bg-[#1a1a1a]">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="grid md:grid-cols-2 gap-16 items-center">
-            <div className="text-white">
-              <h2 className="text-4xl font-light mb-6">
-                Quality. Durability. Reliability.
-              </h2>
-              <p className="text-lg text-[#cccccc] mb-8 leading-relaxed">
-                For over 80 years, these values have guided everything we build. 
-                It's why Toyota owners keep their vehicles longer than any other brand.
-              </p>
-              <div className="space-y-4">
-                <div className="flex items-center gap-4">
-                  <div className="w-3 h-3 bg-[#d71921] rounded-full"></div>
-                  <span className="text-[#cccccc]">Standard Toyota Safety Sense 2.0</span>
-                </div>
-                <div className="flex items-center gap-4">
-                  <div className="w-3 h-3 bg-[#d71921] rounded-full"></div>
-                  <span className="text-[#cccccc]">Industry-leading hybrid technology</span>
-                </div>
-                <div className="flex items-center gap-4">
-                  <div className="w-3 h-3 bg-[#d71921] rounded-full"></div>
-                  <span className="text-[#cccccc]">Best-in-class resale value</span>
-                </div>
-              </div>
-            </div>
-            
-            <div className="bg-[#2a2a2a] rounded-lg p-8">
-              <h3 className="text-2xl font-light text-white mb-6">Ready to explore?</h3>
-              <p className="text-[#cccccc] mb-8">
-                Answer a few questions about how you drive and we'll recommend the perfect Toyota for you.
-              </p>
-              <Button 
-                size="lg"
-                className="bg-[#d71921] hover:bg-[#b91419] text-white px-8 py-4 w-full rounded-none"
-                onClick={() => setView("lifestyle")}
-              >
-                Get Started
-              </Button>
-            </div>
+      {/* OWNERSHIP / FINANCE ADVISORY */}
+      <section className="border-t border-gray-200 bg-gray-300 py-14">
+        <div className="max-w-5xl mx-auto px-6 text-center">
+          <h2 className="text-3xl font-light tracking-tight text-[#111111]">
+            Navigate Ownership with Confidence
+          </h2>
+          <p className="mt-3 text-[#4B4B4B] text-base">
+            Leasing, financing, warranties and cost of ownership — explained clearly so you choose from
+            informed understanding, not guesswork.
+          </p>
+          <div className="mt-6 flex justify-center">
+            <Button variant="outline" className="px-6 py-3 rounded-lg border-[#111111] hover:bg-white" onClick={() => setView("inventory")}>
+              Explore Offers & Models
+            </Button>
           </div>
         </div>
       </section>

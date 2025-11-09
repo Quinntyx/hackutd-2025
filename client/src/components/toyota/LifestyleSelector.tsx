@@ -214,7 +214,7 @@ const LifestyleSelector: React.FC<LifestyleSelectorProps> = ({ onComplete, onNee
   return (
     <div className="max-w-7xl mx-auto px-6 lg:px-8 py-16">
       {/* Beige wrapper */}
-      <div className="bg-[#EBE6DD] rounded-3xl px-8 py-12 shadow-sm border border-gray-200">
+      <div className="bg-gray-200 rounded-3xl px-8 py-12 shadow-sm border border-gray-200">
         <div className="text-center mb-12">
           <h1 className="text-5xl font-extrabold tracking-tight text-[#111827]">
             Find Your Perfect Toyota
@@ -260,7 +260,7 @@ const LifestyleSelector: React.FC<LifestyleSelectorProps> = ({ onComplete, onNee
                       "rounded-xl transition-all duration-200 px-4 py-3 border-2 cursor-grab active:cursor-grabbing select-none",
                       chosen
                         ? cn(
-                            "bg-[#EBE6DD] text-[#111827]",
+                            "bg-red-500 text-[#111827]",
                             borderColor(l.id),
                             "shadow-sm"
                           )
@@ -283,7 +283,7 @@ const LifestyleSelector: React.FC<LifestyleSelectorProps> = ({ onComplete, onNee
                       </div>
                       <div className="flex-1">
                         <h3 className="font-semibold text-base mb-1">{l.name}</h3>
-                        <p className="text-sm text-[#4B5563] leading-snug">{l.description}</p>
+                        <p className="text-sm text-black leading-snug">{l.description}</p>
                       </div>
                     </div>
                   </div>
