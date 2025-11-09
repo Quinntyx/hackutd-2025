@@ -170,5 +170,3 @@ const VehicleInventory: React.FC = () => {
 
 export default VehicleInventory;
 
-
-
