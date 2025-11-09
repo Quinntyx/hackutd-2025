@@ -13,4 +13,5 @@ export type CompoundFilter = {
     mileagePriority: number
     fuelType?: FuelType | undefined
     fuelTypePriority: number
+    city: string
 }
