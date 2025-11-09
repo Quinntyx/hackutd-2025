@@ -131,8 +131,10 @@ export async function getAvailableVehicles(filters: CompoundFilter): Promise<Sea
 
     const scoredCars = cars.map(car => {
         const normalScore = calculateCarScore(car, filters);
-        const budgetScore = calculateCarScore(car, filters, 2);
-        const luxuryScore = calculateCarScore(car, filters, 0.5);
+        // For budget pick, we want to emphasize lower prices (higher weight for price component)
+        const budgetScore = calculateCarScore(car, { ...filters, pricePriority: filters.pricePriority * 2 });
+        // For luxury pick, we want to de-emphasize price (lower weight for price component)
+        const luxuryScore = calculateCarScore(car, { ...filters, pricePriority: filters.pricePriority * 0.5 });
         return {
             car: { ...car, score: normalScore },
             normalScore,

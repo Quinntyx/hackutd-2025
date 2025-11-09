@@ -203,24 +203,10 @@ export default function CarExplorer({ initialFilters }: CarExplorerProps = {}) {
 
   return (
     <div className="w-full min-h-screen">
-      {/* NAV */}
-      <header className="w-full border-b border-gray-200 bg-white/80 backdrop-blur-sm sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <img src={toyotalogo} className="h-8 w-auto" alt="Toyota" />
-            <span className="font-extrabold text-xl tracking-wider">TOYOTA</span>
-          </div>
-
-          <nav className="flex items-center gap-6 text-sm font-medium text-[#2D2D2D]">
-            <a href="/" className="hover:text-[#EB0A1E] cursor-pointer">Home</a>
-            <span className="text-[#EB0A1E] font-semibold">Car Explorer</span>
-          </nav>
-        </div>
-      </header>
 
       <div className="w-full flex">
         {/* Sidebar */}
-        <form onSubmit={handleApply} className="w-72 border-r border-gray-200 p-4 sticky top-[73px] h-[calc(100vh-73px)] overflow-y-auto">
+        <form onSubmit={handleApply} className="w-72 border-r border-gray-200 p-4 sticky top-0 h-screen overflow-y-auto">
           {/* Purchase Type Toggle */}
           <div className="mb-6 space-y-3">
             <div className="flex rounded-md shadow-sm" role="group">

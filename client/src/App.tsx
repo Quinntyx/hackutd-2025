@@ -1,9 +1,9 @@
-import CarExplorer from './pages/CarExplorer'
+import ToyotaApp from './pages/ToyotaApp';
 
 export default function App() {
   return (
     <div>
-      <CarExplorer />
+      <ToyotaApp />
     </div>
   );
 }
