@@ -1,23 +1,23 @@
-// src/components/toyota/ToyotaApp.tsx
+/// <reference types="react" />
+
 import React, { useState } from "react";
 import LifestyleSelector from "@/components/toyota/LifestyleSelector";
 import VehicleInventory from "@/components/toyota/VehicleInventory";
+import BuyersGuide from "@/components/toyota/CarBuyingGuide";
 import toyotalogo from "@/assets/toyota/toyotalogo.png";
 import { Button } from "@/components/ui/button";
-
-import { ShieldCheck, Gauge, Layers, SlidersHorizontal } from "lucide-react";
 import CarExplorer from "@/pages/CarExplorer";
 import type { CompoundFilter } from "../../../model/filter";
 import type { Lifestyle } from "@/components/toyota/LifestyleSelector";
 
-type View = "home" | "lifestyle" | "inventory" | "explorer";
+type View = "home" | "lifestyle" | "inventory" | "explorer" | "guide";
 
 const ToyotaApp: React.FC = () => {
   const [view, setView] = useState<View>("home");
   const [initialFilters, setInitialFilters] = useState<CompoundFilter | undefined>(undefined);
 
   const handleLifestyleComplete = (selectedLifestyles: Lifestyle[]) => {
-    // Accumulate values from all lifestyles
+    // Keep your existing logic
     const accumulator = {
       priceTargets: [] as number[],
       mpgTargets: [] as number[],
@@ -32,7 +32,6 @@ const ToyotaApp: React.FC = () => {
       electricCount: 0,
     };
 
-    // Collect values from each lifestyle
     selectedLifestyles.forEach((lifestyle) => {
       switch (lifestyle.name) {
         case "Daily Commuter":
@@ -42,20 +41,17 @@ const ToyotaApp: React.FC = () => {
           accumulator.fuelTypes.push("Hybrid");
           accumulator.commuteDistances.push(20);
           break;
-
         case "Adventure Seeker":
           accumulator.priceTargets.push(35000);
           accumulator.mileageTargets.push(50000);
           accumulator.transmissions.push("Automatic");
           break;
-
         case "Family Focused":
           accumulator.priceTargets.push(32000);
           accumulator.mileageTargets.push(40000);
           accumulator.fuelTypes.push("Hybrid");
           accumulator.mpgTargets.push(28);
           break;
-
         case "Urban Professional":
           accumulator.priceTargets.push(28000);
           accumulator.mpgTargets.push(35);
@@ -63,13 +59,11 @@ const ToyotaApp: React.FC = () => {
           accumulator.fuelTypes.push("Hybrid");
           accumulator.commuteDistances.push(15);
           break;
-
         case "Commercial Vehicle Use":
           accumulator.priceTargets.push(30000);
           accumulator.mileageTargets.push(60000);
           accumulator.transmissions.push("Automatic");
           break;
-
         case "Environment-Forward Driver":
           accumulator.electricCount++;
           accumulator.electricPriorities.push(3);
@@ -78,7 +72,6 @@ const ToyotaApp: React.FC = () => {
           accumulator.mpgTargets.push(40);
           accumulator.mpgPriorities.push(3);
           break;
-
         case "First-Time Buyer":
           accumulator.priceTargets.push(20000);
           accumulator.pricePriorities.push(3);
@@ -87,10 +80,7 @@ const ToyotaApp: React.FC = () => {
       }
     });
 
-    // Average numeric values
     const avg = (arr: number[]) => arr.length > 0 ? Math.round(arr.reduce((a, b) => a + b, 0) / arr.length) : undefined;
-    
-    // Most common value for categorical fields
     const mostCommon = (arr: string[]) => {
       if (arr.length === 0) return undefined;
       const counts = arr.reduce((acc, val) => {
@@ -100,7 +90,6 @@ const ToyotaApp: React.FC = () => {
       return Object.entries(counts).sort((a, b) => b[1] - a[1])[0][0];
     };
 
-    // Build final filters
     const filters: CompoundFilter = {
       priceTarget: avg(accumulator.priceTargets),
       pricePriority: avg(accumulator.pricePriorities) ?? 1,
@@ -122,116 +111,221 @@ const ToyotaApp: React.FC = () => {
     setView("explorer");
   };
 
+  const Navigation = () => (
+    <header className="w-full bg-white shadow-sm">
+      <div className="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <img src={toyotalogo} className="h-8 w-auto" alt="Toyota" />
+          <span className="font-bold text-xl tracking-wider text-[#1a1a1a]">TOYOTA</span>
+        </div>
+
+        <nav className="flex items-center gap-8 text-sm font-medium">
+          <span 
+            className={`cursor-pointer transition-colors ${view === "home" ? "text-[#d71921] border-b-2 border-[#d71921] pb-1" : "text-[#4a4a4a] hover:text-[#d71921]"}`} 
+            onClick={() => setView("home")}
+          >
+            Home
+          </span>
+          <span 
+            className={`cursor-pointer transition-colors ${view === "lifestyle" ? "text-[#d71921] border-b-2 border-[#d71921] pb-1" : "text-[#4a4a4a] hover:text-[#d71921]"}`} 
+            onClick={() => setView("lifestyle")}
+          >
+            Find My Match
+          </span>
+          <span 
+            className={`cursor-pointer transition-colors ${view === "guide" ? "text-[#d71921] border-b-2 border-[#d71921] pb-1" : "text-[#4a4a4a] hover:text-[#d71921]"}`} 
+            onClick={() => setView("guide")}
+          >
+            Buyer's Guide
+          </span>
+          <span 
+            className={`cursor-pointer transition-colors ${view === "inventory" ? "text-[#d71921] border-b-2 border-[#d71921] pb-1" : "text-[#4a4a4a] hover:text-[#d71921]"}`} 
+            onClick={() => setView("inventory")}
+          >
+            Inventory
+          </span>
+        </nav>
+      </div>
+    </header>
+  );
+
   if (view === "lifestyle") {
-    return <LifestyleSelector onComplete={handleLifestyleComplete} />;
+    return (
+      <div className="min-h-screen bg-[#fafafa]">
+        <Navigation />
+        <LifestyleSelector onComplete={handleLifestyleComplete} onNeedHelp={() => setView("guide")} />
+      </div>
+    );
   }
 
   if (view === "inventory") {
-    return <VehicleInventory />;
+    return (
+      <div className="min-h-screen bg-[#fafafa]">
+        <Navigation />
+        <VehicleInventory />
+      </div>
+    );
+  }
+
+  if (view === "guide") {
+    return (
+      <div className="min-h-screen bg-[#fafafa]">
+        <Navigation />
+        <BuyersGuide />
+      </div>
+    );
   }
 
   if (view === "explorer") {
-    return <CarExplorer initialFilters={initialFilters} />
+    return (
+      <div className="min-h-screen bg-[#fafafa]">
+        <Navigation />
+        <CarExplorer initialFilters={initialFilters} />
+      </div>
+    );
   }
 
   return (
-    <div className="min-h-screen bg-white text-[#0E0E0E]">
-      {/* NAV */}
-      <header className="w-full border-b border-gray-200 bg-white/80 backdrop-blur-sm sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <img src={toyotalogo} className="h-8 w-auto" alt="Toyota" />
-            <span className="font-extrabold text-xl tracking-wider">TOYOTA</span>
-          </div>
+    <div className="min-h-screen bg-white">
+      <Navigation />
 
-          <nav className="flex items-center gap-6 text-sm font-medium text-[#2D2D2D]">
-            <span className="hover:text-[#EB0A1E] cursor-pointer" onClick={() => setView("home")}>Home</span>
-            <span className="hover:text-[#EB0A1E] cursor-pointer" onClick={() => setView("inventory")}>Inventory</span>
-          </nav>
-        </div>
-      </header>
-
-      {/* HERO */}
-      <section className="max-w-7xl mx-auto px-6 py-20 text-center">
-        <h1 className="text-6xl font-light tracking-tight text-[#111111] leading-tight">
-          Crafted for every journey.
-        </h1>
-        <p className="mt-4 text-lg text-[#3A3A3A] max-w-2xl mx-auto">
-          A refined shopping experience built around real drivers, their needs, and the road ahead.
-        </p>
-
-        <div className="mt-10 flex flex-col sm:flex-row justify-center gap-6">
-          <Button className="bg-[#111111] hover:bg-[#111111]/85 text-white px-8 py-6 text-base rounded-xl" onClick={() => setView("lifestyle")}>
-            Find My Match
-          </Button>
-          <Button variant="outline" className="px-8 py-6 text-base rounded-xl border-[#111111] hover:bg-gray-100" onClick={() => setView("inventory")}>
-            Browse Full Inventory
-          </Button>
-        </div>
-      </section>
-
-      {/* BRAND PILLARS */}
-      <section className="max-w-7xl mx-auto px-6 pb-20 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {[
-          {
-            icon: <ShieldCheck className="h-6 w-6 text-[#111111]" />,
-            title: "Safety First",
-            text: "Toyota Safety Sense and proven safety innovation built to protect every passenger."
-          },
-          {
-            icon: <Gauge className="h-6 w-6 text-[#111111]" />,
-            title: "Efficiency Matters",
-            text: "Hybrid engineering that elevates efficiency without sacrificing everyday performance."
-          },
-          {
-            icon: <Layers className="h-6 w-6 text-[#111111]" />,
-            title: "Built To Last",
-            text: "Durability and retained value remain core to every Toyota platform."
-          },
-          {
-            icon: <SlidersHorizontal className="h-6 w-6 text-[#111111]" />,
-            title: "Designed For You",
-            text: "We align recommendations to how you actually drive and live—no complexity needed."
-          }
-        ].map((p, i) => (
-          <div key={i} className="rounded-xl border border-gray-200 bg-white p-6 text-center shadow-sm hover:shadow-md transition">
-            <div className="flex justify-center mb-3">{p.icon}</div>
-            <h3 className="font-semibold text-lg text-[#111111] tracking-wide">{p.title}</h3>
-            <p className="mt-2 text-sm text-[#525252] leading-relaxed">{p.text}</p>
-          </div>
-        ))}
-      </section>
-
-      {/* OWNERSHIP / FINANCE ADVISORY */}
-      <section className="border-t border-gray-200 bg-[#EBE6DD] py-14">
-        <div className="max-w-5xl mx-auto px-6 text-center">
-          <h2 className="text-3xl font-light tracking-tight text-[#111111]">
-            Navigate Ownership with Confidence
-          </h2>
-          <p className="mt-3 text-[#4B4B4B] text-base">
-            Leasing, financing, warranties and cost of ownership — explained clearly so you choose from
-            informed understanding, not guesswork.
-          </p>
-          <div className="mt-6 flex justify-center">
-            <Button variant="outline" className="px-6 py-3 rounded-lg border-[#111111] hover:bg-white" onClick={() => setView("inventory")}>
-              Explore Offers & Models
-            </Button>
+      {/* Hero with Toyota aesthetic */}
+      <section className="relative bg-gradient-to-b from-[#f8f9fa] to-white">
+        <div className="max-w-7xl mx-auto px-6 pt-20 pb-24">
+          <div className="text-center">
+            <h1 className="text-5xl lg:text-6xl font-light text-[#1a1a1a] mb-8 leading-tight">
+              Let's Go Places
+            </h1>
+            <p className="text-xl text-[#666666] mb-12 max-w-2xl mx-auto leading-relaxed">
+              Discover the Toyota that matches your journey. From daily commutes to weekend adventures.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-6 justify-center">
+              <Button 
+                size="lg"
+                className="bg-[#d71921] hover:bg-[#b91419] text-white px-10 py-4 text-lg font-medium rounded-none shadow-lg transition-all hover:shadow-xl"
+                onClick={() => setView("lifestyle")}
+              >
+                Find My Match
+              </Button>
+              <Button 
+                size="lg"
+                variant="outline" 
+                className="border-2 border-[#d71921] text-[#d71921] hover:bg-[#d71921] hover:text-white px-10 py-4 text-lg font-medium rounded-none transition-all"
+                onClick={() => setView("inventory")}
+              >
+                View All Models
+              </Button>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* SHOWCASE BAND is unchanged */}
-      {/* ... keep your existing black showcase section code exactly here ... */}
+      {/* Featured Models */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-light text-[#1a1a1a] mb-4">Popular Models</h2>
+            <p className="text-[#666666]">Trusted by millions of drivers worldwide</p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="group cursor-pointer" onClick={() => setView("inventory")}>
+              <div className="bg-[#f8f9fa] rounded-lg h-56 mb-6 flex items-center justify-center overflow-hidden transition-transform group-hover:scale-105">
+                <div className="w-48 h-28 bg-gradient-to-r from-[#e6e6e6] to-[#d4d4d4] rounded-lg flex items-center justify-center">
+                  <span className="text-[#999999] font-medium">RAV4 Hybrid</span>
+                </div>
+              </div>
+              <h3 className="text-xl font-medium text-[#1a1a1a] mb-2">RAV4 Hybrid</h3>
+              <p className="text-[#666666] mb-2">America's best-selling SUV</p>
+              <p className="text-lg font-semibold text-[#d71921]">Starting at $32,980</p>
+            </div>
 
-      <footer className="border-t border-gray-200 bg-white">
-        <div className="max-w-7xl mx-auto px-6 py-8 text-sm text-[#6B7280] flex flex-col sm:flex-row justify-between gap-4">
-          <span>© {new Date().getFullYear()} Toyota. All Rights Reserved.</span>
-          <div className="flex gap-6">
-            <span className="hover:text-[#EB0A1E] cursor-pointer">Privacy</span>
-            <span className="hover:text-[#EB0A1E] cursor-pointer">Terms</span>
-            <span className="hover:text-[#EB0A1E] cursor-pointer" onClick={() => setView("inventory")}>
-              Inventory
-            </span>
+            <div className="group cursor-pointer" onClick={() => setView("inventory")}>
+              <div className="bg-[#f8f9fa] rounded-lg h-56 mb-6 flex items-center justify-center overflow-hidden transition-transform group-hover:scale-105">
+                <div className="w-48 h-28 bg-gradient-to-r from-[#e6e6e6] to-[#d4d4d4] rounded-lg flex items-center justify-center">
+                  <span className="text-[#999999] font-medium">Camry</span>
+                </div>
+              </div>
+              <h3 className="text-xl font-medium text-[#1a1a1a] mb-2">Camry</h3>
+              <p className="text-[#666666] mb-2">Midsize sedan leader</p>
+              <p className="text-lg font-semibold text-[#d71921]">Starting at $26,420</p>
+            </div>
+
+            <div className="group cursor-pointer" onClick={() => setView("inventory")}>
+              <div className="bg-[#f8f9fa] rounded-lg h-56 mb-6 flex items-center justify-center overflow-hidden transition-transform group-hover:scale-105">
+                <div className="w-48 h-28 bg-gradient-to-r from-[#e6e6e6] to-[#d4d4d4] rounded-lg flex items-center justify-center">
+                  <span className="text-[#999999] font-medium">Prius</span>
+                </div>
+              </div>
+              <h3 className="text-xl font-medium text-[#1a1a1a] mb-2">Prius</h3>
+              <p className="text-[#666666] mb-2">Hybrid pioneer</p>
+              <p className="text-lg font-semibold text-[#d71921]">Starting at $28,545</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Toyota Values */}
+      <section className="py-20 bg-[#1a1a1a]">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="grid md:grid-cols-2 gap-16 items-center">
+            <div className="text-white">
+              <h2 className="text-4xl font-light mb-6">
+                Quality. Durability. Reliability.
+              </h2>
+              <p className="text-lg text-[#cccccc] mb-8 leading-relaxed">
+                For over 80 years, these values have guided everything we build. 
+                It's why Toyota owners keep their vehicles longer than any other brand.
+              </p>
+              <div className="space-y-4">
+                <div className="flex items-center gap-4">
+                  <div className="w-3 h-3 bg-[#d71921] rounded-full"></div>
+                  <span className="text-[#cccccc]">Standard Toyota Safety Sense 2.0</span>
+                </div>
+                <div className="flex items-center gap-4">
+                  <div className="w-3 h-3 bg-[#d71921] rounded-full"></div>
+                  <span className="text-[#cccccc]">Industry-leading hybrid technology</span>
+                </div>
+                <div className="flex items-center gap-4">
+                  <div className="w-3 h-3 bg-[#d71921] rounded-full"></div>
+                  <span className="text-[#cccccc]">Best-in-class resale value</span>
+                </div>
+              </div>
+            </div>
+            
+            <div className="bg-[#2a2a2a] rounded-lg p-8">
+              <h3 className="text-2xl font-light text-white mb-6">Ready to explore?</h3>
+              <p className="text-[#cccccc] mb-8">
+                Answer a few questions about how you drive and we'll recommend the perfect Toyota for you.
+              </p>
+              <Button 
+                size="lg"
+                className="bg-[#d71921] hover:bg-[#b91419] text-white px-8 py-4 w-full rounded-none"
+                onClick={() => setView("lifestyle")}
+              >
+                Get Started
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-white border-t py-12">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+            <div className="flex items-center gap-3">
+              <img src={toyotalogo} className="h-6 w-auto" alt="Toyota" />
+              <span className="text-[#666666] text-sm">© 2025 Toyota Motor Corporation</span>
+            </div>
+            <div className="flex gap-8 text-sm text-[#666666]">
+              <span className="hover:text-[#d71921] cursor-pointer transition-colors">Privacy Policy</span>
+              <span className="hover:text-[#d71921] cursor-pointer transition-colors">Terms of Use</span>
+              <span className="hover:text-[#d71921] cursor-pointer transition-colors" onClick={() => setView("inventory")}>
+                All Models
+              </span>
+            </div>
           </div>
         </div>
       </footer>
@@ -240,4 +334,3 @@ const ToyotaApp: React.FC = () => {
 };
 
 export default ToyotaApp;
-
