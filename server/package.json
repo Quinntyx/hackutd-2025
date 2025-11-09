@@ -2,6 +2,7 @@
   "dependencies": {
     "@elysiajs/static": "^1.4.6",
     "@google/genai": "^1.29.0",
+    "csv-parse": "^6.1.0",
     "elysia": "^1.4.15",
     "mime": "^4.1.0"
   },
