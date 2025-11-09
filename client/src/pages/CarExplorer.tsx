@@ -1,7 +1,4 @@
 import React, { useEffect, useState } from "react"
-import CarCard from "../components/toyota/CarCard"
-import BannerCarCard from "../components/toyota/BannerCarCard"
-import CondensedCarCard from "../components/toyota/CondensedCarCard"
 import SearchResults from "../components/toyota/SearchResults"
 import type { Car, SearchResult, FuelType, Transmission } from "../../../model/data"
 import type { CompoundFilter } from "../../../model/filter"
@@ -299,7 +296,7 @@ export default function CarExplorer({ initialFilters }: CarExplorerProps = {}) {
           <div className="space-y-4">
         {Array.from({ length: 5 }).map((_, i) => (
           <div key={i} className="w-full bg-white shadow-sm rounded-lg overflow-hidden flex flex-row gap-4 p-4 items-stretch animate-pulse">
-            <div className="w-44 flex-shrink-0">
+            <div className="w-44 shrink-0">
           <div className="w-full h-28 sm:h-36 bg-gray-200 rounded-md" />
             </div>
 
