@@ -193,7 +193,7 @@ const ToyotaApp: React.FC = () => {
       <section className="relative bg-linear-to-b from-[#f8f9fa] to-white">
         <div className="max-w-7xl mx-auto px-6 pt-20 pb-24">
           <div className="text-center">
-            <h1 className="text-5xl lg:text-6xl font-light text-[#1a1a1a] mb-8 leading-tight">
+            <h1 className="text-5xl lg:text-6xl font-bond text-[#1a1a1a] mb-8 leading-tight">
               Let's Go Places
             </h1>
             <p className="text-xl text-[#666666] mb-12 max-w-2xl mx-auto leading-relaxed">
