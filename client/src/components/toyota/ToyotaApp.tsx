@@ -6,14 +6,15 @@ import toyotalogo from "@/assets/toyota/toyotalogo.png";
 import { Button } from "@/components/ui/button";
 
 import { ShieldCheck, Gauge, Layers, SlidersHorizontal } from "lucide-react";
+import CarExplorer from "@/pages/CarExplorer";
 
-type View = "home" | "lifestyle" | "inventory";
+type View = "home" | "lifestyle" | "inventory" | "explorer";
 
 const ToyotaApp: React.FC = () => {
   const [view, setView] = useState<View>("home");
 
   const handleLifestyleComplete = () => {
-    setView("inventory");
+    setView("explorer");
   };
 
   if (view === "lifestyle") {
@@ -22,6 +23,10 @@ const ToyotaApp: React.FC = () => {
 
   if (view === "inventory") {
     return <VehicleInventory />;
+  }
+
+  if (view === "explorer") {
+    return <CarExplorer />
   }
 
   return (
