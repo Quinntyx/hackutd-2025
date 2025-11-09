@@ -7,14 +7,16 @@ import BuyersGuide from "@/components/toyota/CarBuyingGuide";
 import toyotalogo from "@/assets/toyota/toyotalogo.png";
 import { Button } from "@/components/ui/button";
 import CarExplorer from "@/pages/CarExplorer";
+import AssessmentPageTwo from "./assessment2";
 import type { CompoundFilter } from "../../../model/filter";
 import type { Lifestyle } from "@/components/toyota/LifestyleSelector";
 
-type View = "home" | "lifestyle" | "inventory" | "explorer" | "guide";
+type View = "home" | "lifestyle" | "assessment2" | "inventory" | "explorer" | "guide";
 
 const ToyotaApp: React.FC = () => {
   const [view, setView] = useState<View>("home");
   const [initialFilters, setInitialFilters] = useState<CompoundFilter | undefined>(undefined);
+  const [lifestyleFilters, setLifestyleFilters] = useState<Partial<CompoundFilter>>({});
 
   const handleLifestyleComplete = (selectedLifestyles: Lifestyle[]) => {
     // Keep your existing logic
@@ -107,8 +109,8 @@ const ToyotaApp: React.FC = () => {
       city: "",
     };
 
-    setInitialFilters(filters);
-    setView("explorer");
+    setLifestyleFilters(filters);
+    setView("assessment2");
   };
 
   const Navigation = () => (
@@ -172,6 +174,30 @@ const ToyotaApp: React.FC = () => {
       <div className="min-h-screen bg-[#fafafa]">
         <Navigation />
         <BuyersGuide />
+      </div>
+    );
+  }
+
+  const handleAssessment2Complete = (incomeBracket: number) => {
+    const updatedFilters = {
+      ...lifestyleFilters,
+      // Adjust filters based on income bracket
+      priceTarget: (lifestyleFilters?.priceTarget || 30000) * (1 + (incomeBracket - 3) * 0.2), // Scale price target based on income
+      pricePriority: Math.max(1, 5 - incomeBracket) // Higher income = lower priority on price
+    };
+    
+    setInitialFilters(updatedFilters as CompoundFilter);
+    setView("explorer");
+  };
+
+  if (view === "assessment2") {
+    return (
+      <div className="min-h-screen bg-[#fafafa]">
+        <Navigation />
+        <AssessmentPageTwo 
+          onComplete={handleAssessment2Complete} 
+          onBack={() => setView("lifestyle")} 
+        />
       </div>
     );
   }

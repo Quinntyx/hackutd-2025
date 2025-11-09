@@ -4,9 +4,14 @@ import { TextBox, SmallTextBox } from "@/components/ui/textbox"
 import { Slider } from "@/components/ui/slider"
 import { Button } from "@/components/ui/button"
 
-function AssessmentPageTwo() {
+interface AssessmentPageTwoProps {
+  onComplete: (incomeBracket: number) => void;
+  onBack: () => void;
+}
+
+function AssessmentPageTwo({ onComplete, onBack }: AssessmentPageTwoProps) {
     const [selectedBox, setSelectedBox] = useState<number | null>(null);
-    const [sliderValue, setSliderValue] = useState([1]);
+    const [sliderValue, setSliderValue] = useState([3]); // Default to middle value
     
     return(
         <div className="min-h-screen w-full bg-linear-to-b from-gray-50 to-white">
@@ -133,18 +138,24 @@ function AssessmentPageTwo() {
                 
                 {/* Navigation Buttons */}
                 <div className="flex flex-col sm:flex-row justify-center items-center gap-4 pb-12">
-                    <Button 
-                        className="bg-white border-2 border-gray-300 text-gray-700 hover:bg-gray-100 hover:border-red-600 hover:text-red-600 transition-all w-full sm:w-auto"
-                        size="lg"
-                        variant="outline">
-                        ← Previous Page
-                    </Button>
-                    <Button 
-                        className="bg-red-600 text-white hover:bg-red-700 border-2 border-red-600 transition-all w-full sm:w-auto"
-                        size="lg"
-                        onClick={() => console.log("clicked")}>
-                        Next Page →
-                    </Button>
+                    <div className="flex gap-4">
+                        <Button 
+                            type="button"
+                            variant="outline"
+                            className="flex-1 py-6 text-lg font-medium rounded-xl border-gray-300"
+                            onClick={onBack}
+                        >
+                            Back
+                        </Button>
+                        <Button 
+                            type="button"
+                            className="flex-1 py-6 text-lg font-medium bg-red-600 hover:bg-red-700 text-white rounded-xl transition-colors duration-200"
+                            onClick={() => selectedBox !== null && onComplete(selectedBox)}
+                            disabled={selectedBox === null}
+                        >
+                            Continue to Recommendations
+                        </Button>
+                    </div>
                 </div>
                 
             </div>
