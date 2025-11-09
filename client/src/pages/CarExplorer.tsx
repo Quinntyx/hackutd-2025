@@ -20,7 +20,9 @@ export default function CarExplorer({ initialFilters }: CarExplorerProps = {}) {
   const [refinementQuery, setRefinementQuery] = useState("")
   const [refining, setRefining] = useState(false)
 
+  type LeaseTerm = '1' | '3' | '6' | '12' | '24';
   const [purchaseType, setPurchaseType] = useState<'buy' | 'lease'>('buy')
+  const [leaseTerm, setLeaseTerm] = useState<LeaseTerm>('12')
   const [filters, setFilters] = useState<CompoundFilter>(initialFilters ?? {
     pricePriority: 5,
     mpgPriority: 5,
@@ -159,15 +161,31 @@ export default function CarExplorer({ initialFilters }: CarExplorerProps = {}) {
     }
   }
 
-  // Adjust car prices based on purchase type
+  // Calculate lease adjustments based on term
+  const getLeaseAdjustments = (term: LeaseTerm) => {
+    switch (term) {
+      case '1': return { monthlyMultiplier: 0.7, depositMultiplier: 1.2 };
+      case '3': return { monthlyMultiplier: 0.6, depositMultiplier: 1.0 };
+      case '6': return { monthlyMultiplier: 0.55, depositMultiplier: 0.85 };
+      case '12': return { monthlyMultiplier: 0.5, depositMultiplier: 0.7 };
+      case '24': return { monthlyMultiplier: 0.25, depositMultiplier: 0.5 };
+      default: return { monthlyMultiplier: 0.5, depositMultiplier: 0.7 };
+    }
+  };
+
+  // Adjust car prices based on purchase type and lease term
   const adjustCarForPurchaseType = (car: Car): Car => {
     if (purchaseType === 'buy') return car;
     
+    const { monthlyMultiplier, depositMultiplier } = getLeaseAdjustments(leaseTerm);
+    
     return {
       ...car,
-      downPayment: car.downPayment * 0.5,
-      monthlyPayment: car.monthlyPayment * 0.5,
-      // Keep other properties the same
+      downPayment: car.downPayment * depositMultiplier,
+      monthlyPayment: car.monthlyPayment * monthlyMultiplier,
+      // Add lease-specific fields
+      isLease: true,
+      leaseTerm: parseInt(leaseTerm)
     };
   };
 
@@ -201,50 +219,54 @@ export default function CarExplorer({ initialFilters }: CarExplorerProps = {}) {
       </header>
 
       <div className="w-full flex">
-      {/* Sidebar */}
-      <aside className="w-72 border-r border-gray-200 p-4 sticky top-[73px] h-[calc(100vh-73px)] overflow-y-auto">
-        {/* Lease/Buy Toggle */}
-        <div className="mb-6">
-          <div className="flex rounded-md shadow-sm" role="group">
-            <button
-              type="button"
-              className={`flex-1 py-2 px-4 text-sm font-medium rounded-l-lg border ${
-                purchaseType === 'buy' 
-                  ? 'bg-[#EB0A1E] text-white border-[#EB0A1E]' 
-                  : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
-              }`}
-              onClick={() => setPurchaseType('buy')}
-            >
-              Buy
-            </button>
-            <button
-              type="button"
-              className={`flex-1 py-2 px-4 text-sm font-medium rounded-r-lg border ${
-                purchaseType === 'lease' 
-                  ? 'bg-[#EB0A1E] text-white border-[#EB0A1E]' 
-                  : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
-              }`}
-              onClick={() => setPurchaseType('lease')}
-            >
-              Lease
-            </button>
-          </div>
-          {/* Potential disclaimer here
-          {purchaseType === 'lease' && (
-            <p className="mt-2 text-xs text-gray-500">
-              Lease prices are estimated at 50% of purchase price for demonstration.
-            </p>
-          )} */}
-        </div>
-        <form onSubmit={handleApply} className="space-y-4">
-          <div>
-            <label className="text-sm font-medium">City</label>
-            <input
-              className="mt-1 w-full rounded border px-2 py-1"
-              value={filters.city}
-              onChange={(e) => setFilters((s) => ({ ...s, city: e.target.value }))}
-              placeholder="e.g. Austin"
-            />
+        {/* Sidebar */}
+        <form onSubmit={handleApply} className="w-72 border-r border-gray-200 p-4 sticky top-[73px] h-[calc(100vh-73px)] overflow-y-auto">
+          {/* Purchase Type Toggle */}
+          <div className="mb-6 space-y-3">
+            <div className="flex rounded-md shadow-sm" role="group">
+              <button
+                type="button"
+                className={`flex-1 py-2 px-4 text-sm font-medium rounded-l-lg border ${
+                  purchaseType === 'buy' 
+                    ? 'bg-[#EB0A1E] text-white border-[#EB0A1E]' 
+                    : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                }`}
+                onClick={() => setPurchaseType('buy')}
+              >
+                Buy
+              </button>
+              <button
+                type="button"
+                className={`flex-1 py-2 px-4 text-sm font-medium rounded-r-lg border ${
+                  purchaseType === 'lease' 
+                    ? 'bg-[#EB0A1E] text-white border-[#EB0A1E]' 
+                    : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                }`}
+                onClick={() => setPurchaseType('lease')}
+              >
+                Lease
+              </button>
+            </div>
+            
+            {purchaseType === 'lease' && (
+              <div className="space-y-2">
+                <label htmlFor="lease-term" className="block text-sm font-medium text-gray-700">
+                  Lease Term
+                </label>
+                <select
+                  id="lease-term"
+                  value={leaseTerm}
+                  onChange={(e) => setLeaseTerm(e.target.value as LeaseTerm)}
+                  className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-[#EB0A1E] focus:border-[#EB0A1E] sm:text-sm rounded-md"
+                >
+                  <option value="1">1 Month</option>
+                  <option value="3">3 Months</option>
+                  <option value="6">6 Months</option>
+                  <option value="12">12 Months</option>
+                  <option value="24">24 Months</option>
+                </select>
+              </div>
+            )}
           </div>
 
           <div>
@@ -339,12 +361,11 @@ export default function CarExplorer({ initialFilters }: CarExplorerProps = {}) {
             </select>
           </div>
 
-            <div className="flex gap-2 pt-2 absolute bottom-2 left-2 right-2">
+          <div className="flex gap-2 pt-2 absolute bottom-2 left-2 right-2">
             <button type="button" onClick={handleReset} className="px-3 py-2 rounded border">Reset</button>
             <button type="submit" className="flex-1 px-3 py-2 rounded bg-red-600 text-white">Apply</button>
-            </div>
+          </div>
         </form>
-      </aside>
       
       {/* Results */}
       <main className="flex-1 overflow-y-auto p-4 space-y-4">

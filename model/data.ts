@@ -11,6 +11,8 @@ export type Car = {
   engineSize: number
   estimatedDailyCost: number
   score: number
+  isLease: boolean
+  leaseTerm: number
 }
 
 export type FuelType = "Gasoline" | "Diesel" | "Hybrid" | "Other"

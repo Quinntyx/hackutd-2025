@@ -1,10 +1,9 @@
-import AssessmentPageTwo from './pages/assessment2'
-import ToyotaApp from './pages/ToyotaApp';
+import CarExplorer from './pages/CarExplorer'
 
 export default function App() {
   return (
     <div>
-      <ToyotaApp />
+      <CarExplorer />
     </div>
   );
 }
