@@ -129,13 +129,10 @@ export default function CarExplorer() {
     fetchCars(reset)
   }
 
-  if (loading) return <div className="p-6">Loading cars…</div>
-  if (error) return <div className="p-6 text-red-600">Error: {error}</div>
-
   return (
-    <div className="w-full h-[80vh] flex">
+    <div className="w-full min-h-screen flex">
       {/* Sidebar */}
-      <aside className="w-72 border-r border-gray-200 p-4 overflow-y-auto">
+      <aside className="w-72 border-r border-gray-200 p-4 sticky top-0 h-screen">
         <form onSubmit={handleApply} className="space-y-4">
           <div>
             <label className="text-sm font-medium">City</label>
@@ -321,17 +318,77 @@ export default function CarExplorer() {
           </div>
         </form>
       </aside>
-
+      
       {/* Results */}
       <main className="flex-1 overflow-y-auto p-4 space-y-4">
-        {cars.length === 0 ? (
-          <div className="text-gray-500">No vehicles found.</div>
+        {/* Error banner — shown in results area but sidebar remains */}
+        {error && <div className="p-3 rounded bg-red-50 text-red-700 border border-red-100">Error: {error}</div>}
+
+        {/* Loading skeletons */}
+        {loading ? (
+          <div className="space-y-4">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div key={i} className="w-full bg-white shadow-sm rounded-lg overflow-hidden flex flex-row gap-4 p-4 items-stretch animate-pulse">
+                <div className="w-44 flex-shrink-0">
+                  <div className="w-full h-28 sm:h-36 bg-gray-200 rounded-md" />
+                </div>
+
+                <div className="flex-1 flex flex-col">
+                  <div className="flex items-start justify-between">
+                    <div className="space-y-2">
+                      <div className="h-5 w-48 bg-gray-200 rounded" />
+                      <div className="h-4 w-32 bg-gray-200 rounded" />
+                    </div>
+
+                    <div className="text-right space-y-2">
+                      <div className="h-7 w-24 bg-gray-200 rounded ml-auto" />
+                      <div className="h-4 w-28 bg-gray-200 rounded" />
+                    </div>
+                  </div>
+
+                  <div className="mt-3 grid grid-cols-2 gap-2">
+                    <div className="space-y-2">
+                      <div className="h-3 w-24 bg-gray-200 rounded" />
+                      <div className="h-4 w-20 bg-gray-200 rounded" />
+                    </div>
+                    <div className="space-y-2">
+                      <div className="h-3 w-24 bg-gray-200 rounded" />
+                      <div className="h-4 w-20 bg-gray-200 rounded" />
+                    </div>
+
+                    <div className="space-y-2">
+                      <div className="h-3 w-24 bg-gray-200 rounded" />
+                      <div className="h-4 w-20 bg-gray-200 rounded" />
+                    </div>
+                    <div className="space-y-2">
+                      <div className="h-3 w-24 bg-gray-200 rounded" />
+                      <div className="h-4 w-20 bg-gray-200 rounded" />
+                    </div>
+                  </div>
+
+                  <div className="mt-auto pt-3 flex items-center justify-between">
+                    <div className="h-4 w-24 bg-gray-200 rounded" />
+                    <div className="flex gap-2">
+                      <div className="h-8 w-20 bg-gray-200 rounded" />
+                      <div className="h-8 w-20 bg-gray-200 rounded" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         ) : (
-          cars.map((c, idx) => (
-            <div key={`${c.model}-${c.year}-${idx}`} className="w-full">
-              <CarCard car={c} />
-            </div>
-          ))
+          <>
+            {cars.length === 0 ? (
+              <div className="text-gray-500">No vehicles found.</div>
+            ) : (
+              cars.map((c, idx) => (
+                <div key={`${c.model}-${c.year}-${idx}`} className="w-full">
+                  <CarCard car={c} />
+                </div>
+              ))
+            )}
+          </>
         )}
       </main>
     </div>
