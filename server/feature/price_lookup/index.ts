@@ -3,25 +3,27 @@ import type { CompoundPricing } from "@model/data";
 const BASE = "https://api.collectapi.com";
 
 export async function getPricesForCity(city: string): Promise<CompoundPricing | null> {
-  const url = new URL("/gasPrice/fromCity", BASE);
-  url.searchParams.set("city", city);
+    return { gasoline: 3.5, diesel: 4.0, electric: 0 }; // Mocked for testing
 
-  const res = await fetch(url.toString(), {
-    headers: {
-      Authorization: process.env.COLLECTAPI_API_KEY ?? "",
-      Accept: "application/json",
-    },
-  });
+    const url = new URL("/gasPrice/fromCity", BASE);
+    url.searchParams.set("city", city);
 
-  if (!res.ok) return null;
+    const res = await fetch(url.toString(), {
+        headers: {
+        Authorization: process.env.COLLECTAPI_API_KEY ?? "",
+        Accept: "application/json",
+        },
+    });
 
-  const json = await res.json();
-  
-  var rtn = {
-    gasoline: json?.result.gasoline / (json?.result.unit == "liter" ? 0.264172 : 1),
-    diesel: json?.result.diesel / (json?.result.unit == "liter" ? 0.264172 : 1),
-    electric: 0
-  }
+    if (!res.ok) return null;
 
-  return rtn as CompoundPricing | null;
+    const json = await res.json();
+    
+    var rtn = {
+        gasoline: json?.result.gasoline / (json?.result.unit == "liter" ? 0.264172 : 1),
+        diesel: json?.result.diesel / (json?.result.unit == "liter" ? 0.264172 : 1),
+        electric: 0
+    }
+
+    return rtn as CompoundPricing | null;
 }
