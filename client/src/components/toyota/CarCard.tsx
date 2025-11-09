@@ -89,7 +89,7 @@ export default function CarCard({ car }: Props) {
         <div className="mt-auto pt-2 flex items-center justify-between">
           <div />
           <div className="flex gap-2">
-            <button className="px-3 py-1 rounded-md bg-blue-600 text-white text-sm hover:bg-blue-700">View</button>
+            <button className="px-3 py-1 rounded-md bg-red-600 text-white text-sm hover:bg-red-700">View</button>
             <button className="px-3 py-1 rounded-md border border-gray-200 text-sm">Contact</button>
           </div>
         </div>

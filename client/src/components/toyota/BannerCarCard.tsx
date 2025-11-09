@@ -25,11 +25,11 @@ export default function BannerCarCard({ car }: { car: Car }) {
         />
 
         {/* gradient overlay for text readability */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/60 to-transparent" />
 
         {/* overlayed text */}
-        <div className="absolute bottom-4 left-6 right-6 z-30 text-white">
-          <div className="flex items-start justify-between mb-3">
+        <div className="absolute bottom-4 left-4 right-4 z-30 text-white">
+          <div className="flex items-start justify-between" style={{ marginBottom: '-25px' }}>
             <div>
               <h2 className="text-2xl sm:text-3xl font-bold leading-snug">{car.model}</h2>
               <p className="text-sm sm:text-base text-white/80 mt-1">
@@ -38,10 +38,10 @@ export default function BannerCarCard({ car }: { car: Car }) {
             </div>
 
             <div className="text-right">
-              <div className="text-3xl sm:text-4xl font-extrabold">{fmtCurrency(car.monthlyPayment)}/mo</div>
               <div className="text-base text-white/70">Down: {fmtCurrency(car.downPayment)}</div>
               <div className="text-sm text-white/70">(12-month term)</div>
               <div className="text-sm text-white/70 mt-1">Est. daily gas: {fmtCurrency(car.estimatedDailyCost)}</div>
+              <div className="text-3xl sm:text-4xl font-extrabold" style={{ translate: '0px 10px' }}>{fmtCurrency(car.monthlyPayment)}/mo</div>
             </div>
           </div>
 

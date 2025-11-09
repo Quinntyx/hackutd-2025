@@ -169,7 +169,7 @@ export default function CarExplorer() {
             <label className="text-sm font-medium">Price Target ($)</label>
             <input
               type="range"
-              className="mt-1 w-full"
+              className="mt-1 w-full accent-red-600"
               min={2000}
               max={40000}
               step={1000}
@@ -246,119 +246,119 @@ export default function CarExplorer() {
             </select>
           </div>
 
-          <div className="flex gap-2 pt-2">
-            <button type="submit" className="flex-1 px-3 py-2 rounded bg-blue-600 text-white">Apply</button>
+            <div className="flex gap-2 pt-2 absolute bottom-2 left-2 right-2">
             <button type="button" onClick={handleReset} className="px-3 py-2 rounded border">Reset</button>
-          </div>
+            <button type="submit" className="flex-1 px-3 py-2 rounded bg-red-600 text-white">Apply</button>
+            </div>
         </form>
       </aside>
       
       {/* Results */}
-      <main className="flex-1 overflow-y-auto p-4 space-y-4">
+      <main className="flex-1 overflow-y-auto p-4 space-y-4 max-w-3xl mx-auto">
         {/* Error banner — shown in results area but sidebar remains */}
         {error && <div className="p-3 rounded bg-red-50 text-red-700 border border-red-100">Error: {error}</div>}
 
         {/* Loading skeletons */}
         {loading ? (
           <div className="space-y-4">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <div key={i} className="w-full bg-white shadow-sm rounded-lg overflow-hidden flex flex-row gap-4 p-4 items-stretch animate-pulse">
-                <div className="w-44 flex-shrink-0">
-                  <div className="w-full h-28 sm:h-36 bg-gray-200 rounded-md" />
-                </div>
+        {Array.from({ length: 5 }).map((_, i) => (
+          <div key={i} className="w-full bg-white shadow-sm rounded-lg overflow-hidden flex flex-row gap-4 p-4 items-stretch animate-pulse">
+            <div className="w-44 flex-shrink-0">
+          <div className="w-full h-28 sm:h-36 bg-gray-200 rounded-md" />
+            </div>
 
-                <div className="flex-1 flex flex-col">
-                  <div className="flex items-start justify-between">
-                    <div className="space-y-2">
-                      <div className="h-5 w-48 bg-gray-200 rounded" />
-                      <div className="h-4 w-32 bg-gray-200 rounded" />
-                    </div>
+            <div className="flex-1 flex flex-col">
+          <div className="flex items-start justify-between">
+            <div className="space-y-2">
+              <div className="h-5 w-48 bg-gray-200 rounded" />
+              <div className="h-4 w-32 bg-gray-200 rounded" />
+            </div>
 
-                    <div className="text-right space-y-2">
-                      <div className="h-7 w-24 bg-gray-200 rounded ml-auto" />
-                      <div className="h-4 w-28 bg-gray-200 rounded" />
-                    </div>
-                  </div>
+            <div className="text-right space-y-2">
+              <div className="h-7 w-24 bg-gray-200 rounded ml-auto" />
+              <div className="h-4 w-28 bg-gray-200 rounded" />
+            </div>
+          </div>
 
-                  <div className="mt-3 grid grid-cols-2 gap-2">
-                    <div className="space-y-2">
-                      <div className="h-3 w-24 bg-gray-200 rounded" />
-                      <div className="h-4 w-20 bg-gray-200 rounded" />
-                    </div>
-                    <div className="space-y-2">
-                      <div className="h-3 w-24 bg-gray-200 rounded" />
-                      <div className="h-4 w-20 bg-gray-200 rounded" />
-                    </div>
+          <div className="mt-3 grid grid-cols-2 gap-2">
+            <div className="space-y-2">
+              <div className="h-3 w-24 bg-gray-200 rounded" />
+              <div className="h-4 w-20 bg-gray-200 rounded" />
+            </div>
+            <div className="space-y-2">
+              <div className="h-3 w-24 bg-gray-200 rounded" />
+              <div className="h-4 w-20 bg-gray-200 rounded" />
+            </div>
 
-                    <div className="space-y-2">
-                      <div className="h-3 w-24 bg-gray-200 rounded" />
-                      <div className="h-4 w-20 bg-gray-200 rounded" />
-                    </div>
-                    <div className="space-y-2">
-                      <div className="h-3 w-24 bg-gray-200 rounded" />
-                      <div className="h-4 w-20 bg-gray-200 rounded" />
-                    </div>
-                  </div>
+            <div className="space-y-2">
+              <div className="h-3 w-24 bg-gray-200 rounded" />
+              <div className="h-4 w-20 bg-gray-200 rounded" />
+            </div>
+            <div className="space-y-2">
+              <div className="h-3 w-24 bg-gray-200 rounded" />
+              <div className="h-4 w-20 bg-gray-200 rounded" />
+            </div>
+          </div>
 
-                  <div className="mt-auto pt-3 flex items-center justify-between">
-                    <div className="h-4 w-24 bg-gray-200 rounded" />
-                    <div className="flex gap-2">
-                      <div className="h-8 w-20 bg-gray-200 rounded" />
-                      <div className="h-8 w-20 bg-gray-200 rounded" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
+          <div className="mt-auto pt-3 flex items-center justify-between">
+            <div className="h-4 w-24 bg-gray-200 rounded" />
+            <div className="flex gap-2">
+              <div className="h-8 w-20 bg-gray-200 rounded" />
+              <div className="h-8 w-20 bg-gray-200 rounded" />
+            </div>
+          </div>
+            </div>
+          </div>
+        ))}
           </div>
         ) : (
           <>
-            {/* If we have a SearchResult object, render its parts specially */}
-            {searchResult ? (
-              <div className="space-y-4">
-                {searchResult.bestFit && <BannerCarCard car={searchResult.bestFit} />}
+        {/* If we have a SearchResult object, render its parts specially */}
+        {searchResult ? (
+          <div className="space-y-4">
+            {searchResult.bestFit && <BannerCarCard car={searchResult.bestFit} />}
 
-                <div className="grid gap-4">
-                  {searchResult.budgetPick && (
-                    <div>
-                      <h3 className="text-sm text-gray-500 mb-2">Budget pick</h3>
-                      <CarCard car={searchResult.budgetPick} />
-                    </div>
-                  )}
-                  {searchResult.luxuryPick && (
-                    <div>
-                      <h3 className="text-sm text-gray-500 mb-2">Luxury pick</h3>
-                      <CarCard car={searchResult.luxuryPick} />
-                    </div>
-                  )}
-                </div>
+            <div className="grid gap-4">
+          {searchResult.budgetPick && (
+            <div>
+              <h3 className="text-sm text-gray-500 mb-2">Budget pick</h3>
+              <CarCard car={searchResult.budgetPick} />
+            </div>
+          )}
+          {searchResult.luxuryPick && (
+            <div>
+              <h3 className="text-sm text-gray-500 mb-2">Luxury pick</h3>
+              <CarCard car={searchResult.luxuryPick} />
+            </div>
+          )}
+            </div>
 
-                {/* Condensed list for other options */}
-                {searchResult.otherOptions && searchResult.otherOptions.length > 0 && (
-                  <>
-                    <h3 className="text-lg font-medium text-gray-900 mt-8 mb-4">Other Matches</h3>
-                    <div className="space-y-3">
-                      {searchResult.otherOptions.map((c, idx) => (
-                        <CondensedCarCard key={`${c.model}-${c.year}-${idx}`} car={c} />
-                      ))}
-                    </div>
-                  </>
-                )}
-              </div>
-            ) : (
-              // fallback: array of cars -> render full cards
-              <>
-                {cars.length === 0 ? (
-                  <div className="text-gray-500">No vehicles found.</div>
-                ) : (
-                  cars.map((c, idx) => (
-                    <div key={`${c.model}-${c.year}-${idx}`} className="w-full">
-                      <CarCard car={c} />
-                    </div>
-                  ))
-                )}
-              </>
+            {/* Condensed list for other options */}
+            {searchResult.otherOptions && searchResult.otherOptions.length > 0 && (
+          <>
+            <h3 className="text-lg font-medium text-gray-900 mt-8 mb-4">Other Matches</h3>
+            <div className="space-y-3">
+              {searchResult.otherOptions.map((c, idx) => (
+            <CondensedCarCard key={`${c.model}-${c.year}-${idx}`} car={c} />
+              ))}
+            </div>
+          </>
             )}
+          </div>
+        ) : (
+          // fallback: array of cars -> render full cards
+          <>
+            {cars.length === 0 ? (
+          <div className="text-gray-500">No vehicles found.</div>
+            ) : (
+          cars.map((c, idx) => (
+            <div key={`${c.model}-${c.year}-${idx}`} className="w-full">
+              <CarCard car={c} />
+            </div>
+          ))
+            )}
+          </>
+        )}
           </>
         )}
       </main>

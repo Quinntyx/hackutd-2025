@@ -34,7 +34,7 @@ export default function CondensedCarCard({ car }: { car: Car }) {
             Sticker: {fmtCurrency(car.stickerPrice)} • Down: {fmtCurrency(car.downPayment)}
           </div>
           <div className="flex gap-2">
-            <button className="px-2 py-1 text-sm rounded bg-blue-600 text-white">View</button>
+            <button className="px-2 py-1 text-sm rounded bg-red-600 text-white">View</button>
             <button className="px-2 py-1 text-sm rounded border border-gray-200">Contact</button>
           </div>
         </div>
