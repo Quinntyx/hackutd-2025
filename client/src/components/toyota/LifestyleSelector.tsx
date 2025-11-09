@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { Mountain, Users, Building2, Wrench, Leaf, Key, Car } from "lucide-react";
+import { Mountain, Users, Building2, Wrench, Leaf, Key, Car, HelpCircle } from "lucide-react";
 
 export interface Lifestyle {
   id: number;
@@ -15,6 +15,7 @@ export interface Lifestyle {
 
 interface LifestyleSelectorProps {
   onComplete: (selected: Lifestyle[]) => void;
+  onNeedHelp: () => void;
 }
 
 type DragSource =
@@ -22,7 +23,7 @@ type DragSource =
   | { type: "selected"; id: number; fromIndex: number }
   | null;
 
-const LifestyleSelector: React.FC<LifestyleSelectorProps> = ({ onComplete }) => {
+const LifestyleSelector: React.FC<LifestyleSelectorProps> = ({ onComplete, onNeedHelp }) => {
   const [selected, setSelected] = useState<Lifestyle[]>([]);
   const [dragSource, setDragSource] = useState<DragSource>(null);
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
@@ -218,9 +219,21 @@ const LifestyleSelector: React.FC<LifestyleSelectorProps> = ({ onComplete }) => 
           <h1 className="text-5xl font-extrabold tracking-tight text-[#111827]">
             Find Your Perfect Toyota
           </h1>
-          <p className="text-lg text-[#4B5563]">
-            Select the lifestyles that match you — drag to add, and reorder to refine.
+          <p className="text-lg text-[#4B5563] mb-4">
+            Select the lifestyles that align with your driving needs. (You can choose more than one.)
           </p>
+          
+          {/* Need Help Button */}
+          <div className="flex justify-center">
+            <Button 
+              variant="outline" 
+              className="border-[#374151] text-[#374151] hover:bg-gray-50 px-6 py-2"
+              onClick={onNeedHelp}
+            >
+              <HelpCircle className="h-4 w-4 mr-2" />
+              Need Additional Help?
+            </Button>
+          </div>
         </div>
 
         {/* Main grid */}
@@ -244,7 +257,7 @@ const LifestyleSelector: React.FC<LifestyleSelectorProps> = ({ onComplete }) => 
                     onDragEnd={onDragEnd}
                     onClick={() => toggle(l)}
                     className={cn(
-                      "rounded-xl transition-all duration-200 px-4 py-3 border-4 cursor-grab active:cursor-grabbing select-none",
+                      "rounded-xl transition-all duration-200 px-4 py-3 border-2 cursor-grab active:cursor-grabbing select-none",
                       chosen
                         ? cn(
                             "bg-[#EBE6DD] text-[#111827]",
