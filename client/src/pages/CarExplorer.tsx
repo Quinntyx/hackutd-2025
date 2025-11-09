@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react"
 import CarCard from "../components/toyota/CarCard"
 import BannerCarCard from "../components/toyota/BannerCarCard"
 import CondensedCarCard from "../components/toyota/CondensedCarCard"
+import SearchResults from "../components/toyota/SearchResults"
 import type { Car, SearchResult, FuelType, Transmission } from "../../../model/data"
 
 function fmtCurrency(n: number) {
@@ -255,10 +256,8 @@ export default function CarExplorer() {
       
       {/* Results */}
       <main className="flex-1 overflow-y-auto p-4 space-y-4 max-w-3xl mx-auto">
-        {/* Error banner — shown in results area but sidebar remains */}
         {error && <div className="p-3 rounded bg-red-50 text-red-700 border border-red-100">Error: {error}</div>}
 
-        {/* Loading skeletons */}
         {loading ? (
           <div className="space-y-4">
         {Array.from({ length: 5 }).map((_, i) => (
@@ -312,54 +311,7 @@ export default function CarExplorer() {
         ))}
           </div>
         ) : (
-          <>
-        {/* If we have a SearchResult object, render its parts specially */}
-        {searchResult ? (
-          <div className="space-y-4">
-            {searchResult.bestFit && <BannerCarCard car={searchResult.bestFit} />}
-
-            <div className="grid gap-4">
-          {searchResult.budgetPick && (
-            <div>
-              <h3 className="text-sm text-gray-500 mb-2">Budget pick</h3>
-              <CarCard car={searchResult.budgetPick} />
-            </div>
-          )}
-          {searchResult.luxuryPick && (
-            <div>
-              <h3 className="text-sm text-gray-500 mb-2">Luxury pick</h3>
-              <CarCard car={searchResult.luxuryPick} />
-            </div>
-          )}
-            </div>
-
-            {/* Condensed list for other options */}
-            {searchResult.otherOptions && searchResult.otherOptions.length > 0 && (
-          <>
-            <h3 className="text-lg font-medium text-gray-900 mt-8 mb-4">Other Matches</h3>
-            <div className="space-y-3">
-              {searchResult.otherOptions.map((c, idx) => (
-            <CondensedCarCard key={`${c.model}-${c.year}-${idx}`} car={c} />
-              ))}
-            </div>
-          </>
-            )}
-          </div>
-        ) : (
-          // fallback: array of cars -> render full cards
-          <>
-            {cars.length === 0 ? (
-          <div className="text-gray-500">No vehicles found.</div>
-            ) : (
-          cars.map((c, idx) => (
-            <div key={`${c.model}-${c.year}-${idx}`} className="w-full">
-              <CarCard car={c} />
-            </div>
-          ))
-            )}
-          </>
-        )}
-          </>
+          <SearchResults searchResult={searchResult} cars={cars} />
         )}
       </main>
     </div>
