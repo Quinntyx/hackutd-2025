@@ -1,5 +1,4 @@
 {
-  "extends": "../tsconfig.base.json",
   "files": [],
   "references": [
     { "path": "./tsconfig.app.json" },
@@ -8,7 +7,8 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@model": [".././model/*"]
     }
   }
 }

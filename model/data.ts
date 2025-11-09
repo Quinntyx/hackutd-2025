@@ -14,3 +14,9 @@ export type Car = {
 export type FuelType = "Gasoline" | "Diesel" | "Hybrid" | "Other"
 
 export type Transmission = "Manual" | "Automatic" | "Semi-Auto"
+
+export type RegionPricing = {
+  gasoline: number
+  diesel: number
+  electric: number
+}

@@ -1,5 +1,4 @@
 {
-  "extends": "../tsconfig.base.json",
   "compilerOptions": {
     "target": "ES2022",
     "module": "ESNext",
@@ -8,7 +7,8 @@
     "strict": true,
     "baseUrl": ".",
     "paths": {
-      "@feature/*": ["./feature/*"]
+      "@feature/*": ["./feature/*"],
+      "@model/*": ["../model/*"],
     },
 
     "types": ["bun-types", "node"],
@@ -17,5 +17,5 @@
     "esModuleInterop": false,
     "allowSyntheticDefaultImports": false
   },
-  "include": ["**/*.ts", "**/*.tsx"]
+  "include": ["**/*.ts", "**/*.tsx", "../model/**/*.ts"]
 }
