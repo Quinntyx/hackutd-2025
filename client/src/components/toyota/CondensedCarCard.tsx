@@ -10,7 +10,7 @@ function fmtCurrency(n: number) {
 export default function CondensedCarCard({ car }: { car: Car }) {
   return (
     <div className="w-full bg-white shadow-sm rounded-md overflow-hidden flex items-center gap-4 p-3">
-      <div className="w-24 flex-shrink-0">
+      <div className="w-36 flex-shrink-0">
         <img src={placeholder} alt={car.model} className="w-full h-16 object-cover rounded-md" />
       </div>
 

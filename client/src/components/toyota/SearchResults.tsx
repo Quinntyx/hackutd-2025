@@ -13,9 +13,13 @@ export default React.memo(function SearchResults({ searchResult, cars }: Props) 
   if (searchResult) {
     return (
       <div className="space-y-4">
-        {searchResult.bestFit && <BannerCarCard car={searchResult.bestFit} />}
+        {searchResult.bestFit && (
+          <div className="max-w-4xl mx-auto">
+            <BannerCarCard car={searchResult.bestFit} />
+          </div>
+        )}
 
-        <div className="grid gap-4">
+        <div className="grid gap-4 max-w-3xl mx-auto">
           {searchResult.budgetPick && (
             <div>
               <h3 className="text-sm text-gray-500 mb-2">Budget pick</h3>
@@ -31,7 +35,7 @@ export default React.memo(function SearchResults({ searchResult, cars }: Props) 
         </div>
 
         {searchResult.otherOptions && searchResult.otherOptions.length > 0 && (
-          <>
+          <div className="max-w-3xl mx-auto">
             <h3 className="text-lg font-medium text-gray-900 mt-8 mb-4">Other Matches</h3>
             <div className="space-y-3">
               {/* Only render what's visible in the viewport */}
@@ -44,7 +48,7 @@ export default React.memo(function SearchResults({ searchResult, cars }: Props) 
                 </div>
               )}
             </div>
-          </>
+          </div>
         )}
       </div>
     )

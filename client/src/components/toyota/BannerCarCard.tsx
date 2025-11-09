@@ -17,7 +17,7 @@ export default function BannerCarCard({ car }: { car: Car }) {
       </div>
 
       {/* image banner */}
-      <div className="relative h-64 sm:h-80 w-full">
+      <div className="relative w-full aspect-video">
         <img
           src={placeholder}
           alt={car.model}

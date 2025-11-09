@@ -260,7 +260,7 @@ export default function CarExplorer({ initialFilters }: CarExplorerProps = {}) {
       </aside>
       
       {/* Results */}
-      <main className="flex-1 overflow-y-auto p-4 space-y-4 max-w-3xl mx-auto">
+      <main className="flex-1 overflow-y-auto p-4 space-y-4">
         {error && <div className="p-3 rounded bg-red-50 text-red-700 border border-red-100">Error: {error}</div>}
 
         {loading ? (
