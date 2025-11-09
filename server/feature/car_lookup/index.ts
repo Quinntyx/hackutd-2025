@@ -11,16 +11,22 @@ const fuelKeyMap: Record<FuelType, keyof CompoundPricing> = {
   Other: 'electric',
 };
 
+// Replace previous clampy normalizers with smooth decay functions.
+// These return values in (0, 1] and vary continuously with the difference,
+// avoiding most-to-only 0/1 outputs.
 function normalizeHigherBetter(value: number, target: number, average: number): number {
     if (value >= target) return 1;
     const diff = target - value;
-    return Math.max(0, 1 - (diff / average));
+    const avg = Math.max(1, average); // guard against zero
+    // smooth decay: closer values -> closer to 1, larger diffs -> approach 0
+    return 1 / (1 + diff / avg);
 }
 
 function normalizeLowerBetter(value: number, target: number, average: number): number {
     if (value <= target) return 1;
     const diff = value - target;
-    return Math.max(0, 1 - (diff / average));
+    const avg = Math.max(1, average);
+    return 1 / (1 + diff / avg);
 }
 
 function calculateScore(car: Car, filters: CompoundFilter, stats: { avgPrice: number, avgMpg: number, avgMileage: number }, priceWeight: number = 1): number {
