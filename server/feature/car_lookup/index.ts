@@ -11,15 +11,25 @@ const fuelKeyMap: Record<FuelType, keyof CompoundPricing> = {
   Other: 'electric',
 };
 
-function calculatePercentageDifference(actual: number, target: number): number {
-    return Math.abs((actual - target) / target);
+// Calculate one-sided percentage difference
+// Returns 0 if actual is better than or equal to target (in the desired direction)
+// Returns positive value if actual is worse than target
+function calculateOneSidedDifference(actual: number, target: number, lowerIsBetter: boolean): number {
+    if (lowerIsBetter) {
+        // For metrics where lower is better (price, mileage)
+        // If actual <= target, no penalty (return 0)
+        // If actual > target, calculate how much worse
+        return actual <= target ? 0 : (actual - target) / target;
+    } else {
+        // For metrics where higher is better (mpg)
+        // If actual >= target, no penalty (return 0)
+        // If actual < target, calculate how much worse
+        return actual >= target ? 0 : (target - actual) / target;
+    }
 }
 
 function normalizeScore(percentDiff: number): number {
-    // Within 10% difference -> full score
-    if (percentDiff <= 0.1) percentDiff = 0.1;
-    // Otherwise, inverse relationship with percentage difference
-    return 1 / (1 + percentDiff);
+    return 1 / (1 + Math.abs(percentDiff));
 }
 
 function calculateCarScore(car: Car, filters: CompoundFilter, priceWeight: number = 1): number {
@@ -28,17 +38,20 @@ function calculateCarScore(car: Car, filters: CompoundFilter, priceWeight: numbe
     const totalMonthlyPrice = car.monthlyPayment + (car.estimatedDailyCost * 30);
 
     if (filters.priceTarget) {
-        const priceDiff = calculatePercentageDifference(totalMonthlyPrice, monthlyPriceTarget);
+        // Lower price is better
+        const priceDiff = calculateOneSidedDifference(totalMonthlyPrice, monthlyPriceTarget, true);
         totalScore += normalizeScore(priceDiff) * filters.pricePriority * priceWeight;
     }
 
     if (filters.mpgTarget) {
-        const mpgDiff = calculatePercentageDifference(car.mpg, filters.mpgTarget);
+        // Higher MPG is better
+        const mpgDiff = calculateOneSidedDifference(car.mpg, filters.mpgTarget, false);
         totalScore += normalizeScore(mpgDiff) * filters.mpgPriority;
     }
 
     if (filters.mileageTarget) {
-        const mileageDiff = calculatePercentageDifference(car.mileage, filters.mileageTarget);
+        // Lower mileage is better
+        const mileageDiff = calculateOneSidedDifference(car.mileage, filters.mileageTarget, true);
         totalScore += normalizeScore(mileageDiff) * filters.mileagePriority;
     }
 
